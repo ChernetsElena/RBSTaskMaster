@@ -1,0 +1,22 @@
+.employee_table .webix_dtable{
+    border-radius: 20px;
+}
+
+.employee_table .webix_hcell{
+    background: #7b8fff;
+    color:rgb(255, 255, 255);
+    font-weight:bold;
+    font-size: 16px;
+    text-align: center;
+}
+
+.employee_table .webix_column{
+    font-size: 16px;
+}
+.employee_table .webix_column > div{
+    border-color:#ddd;
+}
+
+.hover_employee_table{
+    background: #e2ebff;
+}

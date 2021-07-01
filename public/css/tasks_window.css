@@ -1,0 +1,23 @@
+.calendar .webix_el_box {
+    width: 300px;
+}
+
+.segment_btn_task_window .webix_segment_0 {
+    border-radius: 10px;
+}
+
+.segment_btn_task_window .webix_segment_1 {
+    border-radius: 10px;
+}
+
+.segment_btn_task_window .webix_segment_N {
+    border-radius: 10px;
+}
+
+.segment_btn_task_window .webix_segment_N.webix_selected {
+    background: red;
+}
+
+.segment_btn_task_window .webix_segment_1.webix_selected {
+    background: rgb(255, 166, 0);
+}

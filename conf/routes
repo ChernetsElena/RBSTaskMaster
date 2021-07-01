@@ -1,0 +1,50 @@
+# Routes Config
+#
+# This file defines all application routes (Higher priority routes first)
+#
+
+module:testrunner
+# module:jobs
+
+
+GET     /                                       App.Index
+
+GET     /task/project/:id                       CTask.GetAllByProject 
+GET     /task/:id                               CTask.GetById
+POST    /task/create                            CTask.Create
+POST    /task/update                            CTask.Update
+POST    /task/delete                            CTask.Delete
+
+GET     /project/all                            CProject.GetAll 
+GET     /project/:id                            CProject.GetById
+POST    /project/create                         CProject.Create    
+POST    /project/update                         CProject.Update
+POST    /project/delete                         CProject.Delete
+
+GET     /employee/all                           CEmployee.GetAll     
+GET     /employee/:id                           CEmployee.GetById       
+POST    /employee/create                        CEmployee.Create
+POST    /employee/update                        CEmployee.Update
+POST    /employee/delete                        CEmployee.Delete
+
+GET     /position/all                           CPosition.GetAll                           
+
+GET     /status/all                             CStatus.GetAll
+
+GET     /urgently/all                           CUrgently.GetAll
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/*filepath                       Static.Serve("public")
+
+# Catch all, this will route any request into the controller path
+#
+#                    **** WARNING ****
+# Enabling this exposes any controller and function to the web.
+# ** This is a serious security issue if used online **
+#
+# For rapid development uncomment the following to add new controller.action endpoints
+# without having to add them to the routes table.
+# *       /:controller/:action                    :controller.:action

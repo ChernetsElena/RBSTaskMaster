@@ -1,0 +1,65 @@
+@font-face {
+  font-family: RobotoMedium;
+  src: url('../fonts/Roboto-Medium.ttf');
+}
+
+.webix_list {
+    background: none;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+.movies_tasks .webix_list_item, .movies_tasks .webix_list_item.webix_selected{
+    width: 150px;
+    padding: 0px 0px;
+    border: 2px solid white;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 8px;
+    background-image:none;
+    background:linear-gradient(-45deg, #aebaff, white);
+    color: rgb(37, 37, 37);
+}
+
+.overall_tasks{
+    font-family: RobotoMedium;
+    border-radius: 4px;
+    height: 140px;
+}
+  
+.title_tasks{
+    height:40px;
+    width: 200px;
+    margin-top: 6px;
+    margin-left: 6px;
+    text-align: center;
+    line-height:20px;
+    font-weight:bold;
+    float: left;
+    overflow:auto;
+    word-wrap: break-word;
+}
+
+.status_tasks{
+    height:20px;
+    width: 200px;
+    margin-top: 5px;
+    margin-left: 6px;
+    float: left;
+    line-height:20px;
+    overflow:hidden;
+}
+
+.performer_tasks{
+    height:20px;
+    width: 200px;
+    line-height: 20px;
+    text-indent:5px;
+    overflow:hidden;
+    margin-top: 5px;
+    margin-left: 6px;
+    text-align: end;
+    font-weight:bold;
+    float: left;
+    
+}

@@ -1,0 +1,49 @@
+{
+  "_from": "webix@8.3",
+  "_id": "webix@8.3.0",
+  "_inBundle": false,
+  "_integrity": "sha512-QuDAWJDrGl42uXy7Jp1+WMFpuwN7buEdeBhwd9gj/+vLZMGRikz2l8MtyDZ8A+/h2WXBj+eErcDAYdJ/3pYYHA==",
+  "_location": "/webix",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "webix@8.3",
+    "name": "webix",
+    "escapedName": "webix",
+    "rawSpec": "8.3",
+    "saveSpec": null,
+    "fetchSpec": "8.3"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/webix/-/webix-8.3.0.tgz",
+  "_shasum": "6f0d268563fccecb49b1ac071e34ffa10b2d25ee",
+  "_spec": "webix@8.3",
+  "_where": "/home/stg108/TaskMaster",
+  "author": {
+    "name": "XB Software"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Webix UI",
+  "keywords": [
+    "webix",
+    "ui",
+    "tree",
+    "datatable",
+    "list",
+    "chart",
+    "form",
+    "grid"
+  ],
+  "license": "SEE LICENSE IN license.text",
+  "main": "webix.js",
+  "name": "webix",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "types": "types/webix.d.ts",
+  "version": "8.3.0"
+}
