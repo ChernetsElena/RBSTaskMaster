@@ -72,9 +72,6 @@ export class Project {
                     this.clickTimeout = setTimeout(() => {
                         this.clickTimeout = null
                         taskModel.getTasksByProjectId(select.ID).then((data) => {
-                            data.map((task) => {
-                                console.log(task.plan_time, task.ID)
-                            })
                             this.tasks.refreshView(data, select.ID, selectedProject.color_one, selectedProject.color_two)   
                         })
                         this.showTasksView()

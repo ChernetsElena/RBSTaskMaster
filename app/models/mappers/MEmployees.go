@@ -338,8 +338,30 @@ func (m *MEmployee) Update(edbt *EmployeeDBType) (err error) {
 
 // Delete удаление сотрудника
 func (m *MEmployee) Delete(edbt *EmployeeDBType) (err error) {
-	// запрос
+
+	// запрос на установку статуса согласование и удаление исполнителя задач с удаляемым исполнителем
 	query := `
+		UPDATE "taskmaster".t_tasks
+		SET 
+			fk_performer = null,
+			fk_status = 5
+		WHERE fk_performer = $1;
+	`
+
+	// выполнение запроса
+	_, err = m.db.Exec(query, edbt.Pk_id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+			return
+		}
+
+		revel.AppLog.Errorf("MEmployee.Delete : m.db.Exec t_tasks, %s\n", err)
+		return
+	}
+
+	// запрос
+	query = `
 		DELETE FROM "taskmaster".t_employees
 		WHERE pk_id = $1;
 	`

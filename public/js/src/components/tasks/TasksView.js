@@ -35,7 +35,6 @@ export default function TasksView(TASK_STATUS){
                     },
                     drag: false,
                     template: function (obj) {
-                        console.log(TASK_URGENTLY_COLOR)
                         return "<div class='overall_tasks' style = 'border: 4px solid " + TASK_URGENTLY_COLOR[obj.urgently-1].value +"'>" + 
                         "<div class ='title_tasks'>" + obj.name + "</div>" + 
                         "</br><div class='status_tasks'>Статус: " + TASK_STATUS[obj.status-1].value + "</div>" + 
@@ -74,7 +73,6 @@ export default function TasksView(TASK_STATUS){
                     data: []
                 },
             ]},
-            //" + TASK_URGENTLY_COLOR[3].value +"
             {rows: [
                 {
                     view: "label",

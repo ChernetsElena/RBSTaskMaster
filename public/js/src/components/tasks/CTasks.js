@@ -1,9 +1,10 @@
 import TasksView from './TasksView.js';
-import { TaskWindow, TASK_WINDOW_TYPE } from './taskWindow/CTasksWindow.js'
-import taskModel from '../../models/taskModel.js'
-import employeeModel from '../../models/employeeModel.js'
-import statusModel from '../../models/statusModel.js'
-import urgentlyModel from '../../models/urgentlyModel.js'
+import { TaskWindow, TASK_WINDOW_TYPE } from './taskWindow/CTasksWindow.js';
+import taskModel from '../../models/taskModel.js';
+import employeeModel from '../../models/employeeModel.js';
+import statusModel from '../../models/statusModel.js';
+import urgentlyModel from '../../models/urgentlyModel.js';
+import {StringToDate} from '../../../helpers/dateFormatter.js';
 
 
 export class Tasks {
@@ -100,9 +101,10 @@ export class Tasks {
         this.view.newList.attachEvent("onSelectChange", (id) => {
             let select = this.view.newList.getItem(id)
             taskModel.getTaskById(select.ID).then((selectTask) => {
+                console.log(selectTask, 'selectTask')
+                selectTask.plan_time = StringToDate(selectTask.plan_time)
+                selectTask.fact_time = StringToDate(selectTask.fact_time)
                 this.window.parse(selectTask)
-                let hours = selectTask.plan_time.getHours()
-                console.log(hours)
                 this.showWindow(TASK_WINDOW_TYPE.new);
                 this.view.newList.unselectAll();
             })
@@ -111,16 +113,9 @@ export class Tasks {
         this.view.assignedList.attachEvent("onSelectChange", (id) => {
             let select = this.view.assignedList.getItem(id)
             taskModel.getTaskById(select.ID).then((selectTask) => {
-                console.log(selectTask.plan_time, 'before' )
-                console.log(selectTask.fact_time, 'before' )
-                console.log(selectTask.plan_time.substr(0, selectTask.plan_time.length-1), 'slice plan')
-                console.log(selectTask.fact_time.substr(0, selectTask.fact_time.length-1), 'slice fact_time')
-                selectTask.plan_time = new Date(selectTask.plan_time.substr(0, selectTask.plan_time.length-1))
-                selectTask.fact_time = new Date(selectTask.fact_time.substr(0, selectTask.fact_time.length-1))
-                console.log(selectTask.plan_time, 'plan' )
-                console.log(selectTask.fact_time, 'fact' )
+                selectTask.plan_time = StringToDate(selectTask.plan_time)
+                selectTask.fact_time = StringToDate(selectTask.fact_time)
                 this.window.parse(selectTask)
-                
                 this.showWindow(TASK_WINDOW_TYPE.assigned)
                 this.view.assignedList.unselectAll();
             })
@@ -129,6 +124,8 @@ export class Tasks {
         this.view.inJobList.attachEvent("onSelectChange", (id) => {
             let select = this.view.inJobList.getItem(id)
             taskModel.getTaskById(select.ID).then((selectTask) => {
+                selectTask.plan_time = StringToDate(selectTask.plan_time)
+                selectTask.fact_time = StringToDate(selectTask.fact_time)
                 this.window.parse(selectTask)
                 this.showWindow(TASK_WINDOW_TYPE.inJob);
                 this.view.inJobList.unselectAll();
@@ -138,6 +135,9 @@ export class Tasks {
         this.view.coordinationList.attachEvent("onSelectChange", (id) => {
             let select = this.view.coordinationList.getItem(id)
             taskModel.getTaskById(select.ID).then((selectTask) => {
+                console.log(selectTask)
+                selectTask.plan_time = StringToDate(selectTask.plan_time)
+                selectTask.fact_time = StringToDate(selectTask.fact_time)
                 this.window.parse(selectTask)
                 this.showWindow(TASK_WINDOW_TYPE.coordination)
                 this.view.coordinationList.unselectAll();
@@ -147,6 +147,8 @@ export class Tasks {
         this.view.doneList.attachEvent("onSelectChange", (id) => {
             let select = this.view.doneList.getItem(id)
             taskModel.getTaskById(select.ID).then((selectTask) => {
+                selectTask.plan_time = StringToDate(selectTask.plan_time)
+                selectTask.fact_time = StringToDate(selectTask.fact_time)
                 this.window.parse(selectTask)
                 this.showWindow(TASK_WINDOW_TYPE.done);
                 this.view.doneList.unselectAll();

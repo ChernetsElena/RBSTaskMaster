@@ -2,8 +2,8 @@ package mappers
 
 import (
 	"database/sql"
+	"fmt"
 	"taskmaster/app/models/entities"
-	"time"
 
 	"github.com/revel/revel"
 )
@@ -17,8 +17,8 @@ type TaskDBType struct {
 	Fk_urgently   int64          // FK на срочность
 	C_name        string         // название
 	C_description sql.NullString // описание
-	C_plan_time   *time.Time     // планируемое время выполнения
-	C_fact_time   *time.Time     // фактическое время выполнения
+	C_plan_time   string         // планируемое время выполнения
+	C_fact_time   string         // фактическое время выполнения
 }
 
 // ToType функция преобразования типа бд к типу сущности
@@ -193,10 +193,11 @@ func (m *MTask) Insert(edbt *TaskDBType) (id int64, err error) {
 		row   *sql.Row // выборка данных
 	)
 
-	// запрос
-	query = `
+	if edbt.Fk_performer.Int64 == 0 {
+		fmt.Printf("\n\nUBRA: %v\n\n", "YES")
+		// запрос
+		query = `
 		INSERT INTO taskmaster.t_tasks(
-			fk_performer,
 			fk_project,
 			fk_status,
 			fk_urgently,
@@ -206,29 +207,67 @@ func (m *MTask) Insert(edbt *TaskDBType) (id int64, err error) {
 			c_fact_time
 		)
 		VALUES(
-			$1,	-- fk_performer,
-			$2,	-- fk_project,
-			$3,	-- fk_status,
-			$4,	-- fk_urgently,
-			$5,	-- c_name,
-			$6,	-- c_description,
-			$7,	-- c_plan_time,
-			$8	-- c_fact_time
+			$1,	-- fk_project,
+			$2,	-- fk_status,
+			$3,	-- fk_urgently,
+			$4,	-- c_name,
+			$5,	-- c_description,
+			$6,	-- c_plan_time,
+			$7	-- c_fact_time
 		)
 		returning pk_id;
-	`
+		`
 
-	// выполнение запроса
-	row = m.db.QueryRow(query,
-		edbt.Fk_performer,  // fk_performer
-		edbt.Fk_project,    // fk_project
-		edbt.Fk_status,     // fk_status
-		edbt.Fk_urgently,   // fk_urgently
-		edbt.C_name,        // c_name
-		edbt.C_description, // c_description
-		edbt.C_plan_time,   // c_plan_name
-		edbt.C_fact_time,   // c_fact_time
-	)
+		// выполнение запроса
+		row = m.db.QueryRow(query,
+			edbt.Fk_project,    // fk_project
+			edbt.Fk_status,     // fk_status
+			edbt.Fk_urgently,   // fk_urgently
+			edbt.C_name,        // c_name
+			edbt.C_description, // c_description
+			edbt.C_plan_time,   // c_plan_name
+			edbt.C_fact_time,   // c_fact_time
+		)
+	}
+
+	if edbt.Fk_performer.Int64 != 0 {
+		// запрос
+		query = `
+			INSERT INTO taskmaster.t_tasks(
+				fk_performer,
+				fk_project,
+				fk_status,
+				fk_urgently,
+				c_name,
+				c_description,
+				c_plan_time,
+				c_fact_time
+			)
+			VALUES(
+				$1,	-- fk_performer,
+				$2,	-- fk_project,
+				$3,	-- fk_status,
+				$4,	-- fk_urgently,
+				$5,	-- c_name,
+				$6,	-- c_description,
+				$7,	-- c_plan_time,
+				$8	-- c_fact_time
+			)
+			returning pk_id;
+		`
+
+		// выполнение запроса
+		row = m.db.QueryRow(query,
+			edbt.Fk_performer,  // fk_performer
+			edbt.Fk_project,    // fk_project
+			edbt.Fk_status,     // fk_status
+			edbt.Fk_urgently,   // fk_urgently
+			edbt.C_name,        // c_name
+			edbt.C_description, // c_description
+			edbt.C_plan_time,   // c_plan_name
+			edbt.C_fact_time,   // c_fact_time
+		)
+	}
 
 	// считывание id
 	err = row.Scan(&id)
@@ -251,35 +290,65 @@ func (m *MTask) Update(edbt *TaskDBType) (err error) {
 		query string // строка запроса
 	)
 
-	revel.AppLog.Debugf("MTask.Update, edbt: %+v\n", edbt)
+	if edbt.Fk_performer.Int64 == 0 {
+		// запрос
+		query = `
+			UPDATE taskmaster.t_tasks
+			SET 
+				fk_performer = null,
+				fk_project = $2,
+				fk_status = $3,
+				fk_urgently = $4,
+				c_name = $5,
+				c_description = $6,
+				c_plan_time = $7,
+				c_fact_time = $8
+			WHERE pk_id = $1;
+		`
+		// выполнение запроса
+		_, err = m.db.Exec(query,
+			edbt.Pk_id,         // pk_id
+			edbt.Fk_project,    // fk_project
+			edbt.Fk_status,     // fk_status
+			edbt.Fk_urgently,   // fk_urgently
+			edbt.C_name,        // c_name
+			edbt.C_description, // c_description
+			edbt.C_plan_time,   // c_plan_name
+			edbt.C_fact_time,   // c_fact_time
+		)
+	}
 
-	// запрос
-	query = `
-		UPDATE taskmaster.t_tasks
-		SET 
-			fk_performer = $2,
-			fk_project = $3,
-			fk_status = $4,
-			fk_urgently = $5,
-			c_name = $6,
-			c_description = $7,
-			c_plan_time = $8,
-			c_fact_time = $9
-		WHERE pk_id = $1;
-	`
+	if edbt.Fk_performer.Int64 != 0 {
 
-	// выполнение запроса
-	_, err = m.db.Exec(query,
-		edbt.Pk_id,         // pk_id
-		edbt.Fk_performer,  // fk_performer
-		edbt.Fk_project,    // fk_project
-		edbt.Fk_status,     // fk_status
-		edbt.Fk_urgently,   // fk_urgently
-		edbt.C_name,        // c_name
-		edbt.C_description, // c_description
-		edbt.C_plan_time,   // c_plan_name
-		edbt.C_fact_time,   // c_fact_time
-	)
+		// запрос
+		query = `
+			UPDATE taskmaster.t_tasks
+			SET 
+				fk_performer = $2,
+				fk_project = $3,
+				fk_status = $4,
+				fk_urgently = $5,
+				c_name = $6,
+				c_description = $7,
+				c_plan_time = $8,
+				c_fact_time = $9
+			WHERE pk_id = $1;
+		`
+
+		// выполнение запроса
+		_, err = m.db.Exec(query,
+			edbt.Pk_id,         // pk_id
+			edbt.Fk_performer,  // fk_performer
+			edbt.Fk_project,    // fk_project
+			edbt.Fk_status,     // fk_status
+			edbt.Fk_urgently,   // fk_urgently
+			edbt.C_name,        // c_name
+			edbt.C_description, // c_description
+			edbt.C_plan_time,   // c_plan_name
+			edbt.C_fact_time,   // c_fact_time
+		)
+	}
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = nil

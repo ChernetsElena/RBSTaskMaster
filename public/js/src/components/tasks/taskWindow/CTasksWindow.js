@@ -56,6 +56,8 @@ export class TaskWindow {
         })
 
         this.view.formfields.performer.attachEvent("onChange", () => {
+            this.view.formfields.planTime.setValue(new Date(2000, 0, 1, 0, 0, 0, 0))
+            this.view.formfields.factTime.setValue(new Date(2000, 0, 1, 0, 0, 0, 0))
             if (this.view.formfields.performer.getValue() == "") {
                 this.view.formfields.status.setValue(1)
             }
@@ -64,81 +66,24 @@ export class TaskWindow {
             }
         })
 
+        this.view.formfields.status.attachEvent("onChange", () => {
+            let status = this.view.formfields.status.getValue()
+            let performer = this.view.formfields.performer.getValue()
+            let a = (performer == 0) || (performer == "")
+            
+            if ((status == "2") && a) {
+                this.view.formfields.status.setValue(1)
+            }
+            if ((status == "1") && !a) {
+                this.view.formfields.status.setValue(2)
+            }
+         })
+
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
              switch (this.type) {
                 case TASK_WINDOW_TYPE.create:
                     if (this.view.form.validate()) {
                         taskModel.createTask(this.fetch()).then(() => {
-                            this.view.form.clear()
-                            this.onChange()
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
-
-                case TASK_WINDOW_TYPE.new:
-                    if (this.view.form.validate()) {
-                        taskModel.updateTask(this.fetch()).then(() => {
-                                this.view.form.clear()
-                                this.onChange()
-                                this.hide()
-                            })
-                            break;
-                        }
-                        else {
-                            webix.message("Ваша форма не валидна")
-                            break;
-                        }
-
-                case TASK_WINDOW_TYPE.assigned:
-                    if (this.view.form.validate()) {
-                        taskModel.updateTask(this.fetch()).then(() => {
-                            this.view.form.clear()
-                            this.onChange()
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
-
-                case TASK_WINDOW_TYPE.inJob:
-                    if (this.view.form.validate()) {
-                        taskModel.updateTask(this.fetch()).then(() => {
-                            this.view.form.clear()
-                            this.onChange()
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
-
-                case TASK_WINDOW_TYPE.pause:
-                    if (this.view.form.validate()) {
-                        taskModel.updateTask(this.fetch()).then(() => {
-                            this.view.form.clear()
-                            this.onChange()
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
-
-                case TASK_WINDOW_TYPE.coordination:
-                    if (this.view.form.validate()) {
-                        taskModel.updateTask(this.fetch()).then(() => {
                             this.view.form.clear()
                             this.onChange()
                             this.hide()
@@ -163,12 +108,26 @@ export class TaskWindow {
                         webix.message("Ваша форма не валидна")
                         break;
                     }
+                default:
+                    if (this.view.form.validate()) {
+                        console.log(this.fetch(), 'fetch')
+                        taskModel.updateTask(this.fetch()).then(() => {
+                                this.view.form.clear()
+                                this.onChange()
+                                this.hide()
+                            })
+                            break;
+                        }
+                    else {
+                        webix.message("Ваша форма не валидна")
+                        break;
+                    }
             }
         })
 
         this.view.deleteBtn.attachEvent("onItemClick", () => {
             this.view.window.hide()
-            this.show(TASK_WINDOW_TYPE.delete,this.names)
+            this.show(TASK_WINDOW_TYPE.delete, this.names)
         })
     }
 
@@ -329,7 +288,7 @@ export class TaskWindow {
                 this.view.formfields.performer.enable()
                 //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
-                this.view.formfields.status.disable()
+                this.view.formfields.status.enable()
                 this.view.formfields.status.define("options", [this.task_status[0], this.task_status[1], this.task_status[4]])
                 this.view.formfields.status.refresh()
                 this.view.formfields.urgently.enable()
@@ -420,7 +379,6 @@ export class TaskWindow {
     }
 
     parse(values) {
-        console.log(values)
         this.view.form.setValues(values)
     }
 

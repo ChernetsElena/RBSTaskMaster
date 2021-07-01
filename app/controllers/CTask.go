@@ -104,6 +104,7 @@ func (c *CTask) Update() revel.Result {
 
 	// формирование сущности для обновления из post параметров
 	task, err = c.fetchPostTask()
+	fmt.Printf("\n\nTaskUpdate, TASK: %v\n\n", task)
 	if err != nil {
 		revel.AppLog.Errorf("CTask.Update : c.fetchPostTask, %s\n", err)
 		return c.RenderJSON(Failed(err.Error()))
@@ -162,6 +163,7 @@ func (c *CTask) fetchPostTask() (e *entities.Task, err error) {
 
 	// преобразование тела запроса в структуру сущности
 	err = json.Unmarshal(rawRequest, &e)
+
 	if err != nil {
 		revel.AppLog.Errorf("CTask.fetchPostTask : json.Unmarshal, %s\n", err)
 		return

@@ -80,8 +80,13 @@ export default class Model {
                             resolve(xhr.response.data);
                             return;
                         case RESULT_STATE.FAILED: // отрицательный результат запроса
-                            webix.message('Не удалось совершить запрос', 'error');
-                            console.error(`GET ${xhr.response.error}`);
+                            if (xhr.response.error == "pq: update or delete on table \"t_employees\" violates foreign key constraint \"t_projects_fk_teamlead_fkey\" on table \"t_projects\""){
+                                webix.message('Данный сотрудник является тимлидом одного или нескольких проектов! Пожалуйста, переопределите тимлида данных проектов до удаления сотрудника.', 'error');
+                            }
+                            else {
+                                webix.message('Не удалось совершить запрос', 'error');
+                                console.error(`GET ${xhr.response.error}`);
+                            }
                             reject();
                             return;
                         default: // ошибка при получении результата запроса
