@@ -2,22 +2,41 @@
     width: 300px;
 }
 
-.segment_btn_task_window .webix_segment_0 {
-    border-radius: 10px;
-}
-
-.segment_btn_task_window .webix_segment_1 {
-    border-radius: 10px;
-}
-
+.segment_btn_task_window .webix_segment_0,
+.segment_btn_task_window .webix_segment_1,
 .segment_btn_task_window .webix_segment_N {
     border-radius: 10px;
+}
+
+.segment_btn_task_window .webix_segment_0.webix_selected {
+    background: rgb(64, 174, 54);
+}
+
+.segment_btn_task_window .webix_segment_1.webix_selected {
+    background: rgb(255, 166, 0);
 }
 
 .segment_btn_task_window .webix_segment_N.webix_selected {
     background: red;
 }
 
-.segment_btn_task_window .webix_segment_1.webix_selected {
-    background: rgb(255, 166, 0);
+.webix_view.webix_control .webix_disabled_box .webix_segment_0.webix_selected{
+    background: rgb(64, 174, 54);
+    color:  #fff;
+    border: 1px solid rgb(64, 174, 54);
+    text-shadow: none;
+}
+
+.webix_view.webix_control .webix_disabled_box .webix_segment_1.webix_selected{
+    background:rgb(255, 166, 0);
+    color: #fff;
+    border: 1px solid rgb(255, 166, 0);
+    text-shadow: none;
+}
+
+.webix_view.webix_control .webix_disabled_box .webix_segment_N.webix_selected{
+    background: red;
+    color:  #fff;
+    border: 1px solid red;
+    text-shadow: none;
 }

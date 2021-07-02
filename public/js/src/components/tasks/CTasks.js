@@ -101,7 +101,6 @@ export class Tasks {
         this.view.newList.attachEvent("onSelectChange", (id) => {
             let select = this.view.newList.getItem(id)
             taskModel.getTaskById(select.ID).then((selectTask) => {
-                console.log(selectTask, 'selectTask')
                 selectTask.plan_time = StringToDate(selectTask.plan_time)
                 selectTask.fact_time = StringToDate(selectTask.fact_time)
                 this.window.parse(selectTask)
@@ -135,7 +134,6 @@ export class Tasks {
         this.view.coordinationList.attachEvent("onSelectChange", (id) => {
             let select = this.view.coordinationList.getItem(id)
             taskModel.getTaskById(select.ID).then((selectTask) => {
-                console.log(selectTask)
                 selectTask.plan_time = StringToDate(selectTask.plan_time)
                 selectTask.fact_time = StringToDate(selectTask.fact_time)
                 this.window.parse(selectTask)

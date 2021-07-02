@@ -27,6 +27,7 @@ export class TaskWindow {
             window: $$('taskWindow'),
             windowLabel: $$('taskWindowLabel'),
             windowConfirmBtn: $$('taskWindowAddBtn'),
+            windowClearBtn:$$('taskWindowClearBtn'),
             closeBtn: $$('taskWindowCloseButton'),
             deleteBtn: $$('taskWindowDeleteButton'),
             form: $$('formWindowTask'),
@@ -50,8 +51,16 @@ export class TaskWindow {
             })
         })
 
+        this.view.windowClearBtn.attachEvent("onItemClick", () => {
+            this.view.formfields.name.setValue("")
+            this.view.formfields.description.setValue("")
+            this.view.formfields.performer.setValue("")
+            this.view.formfields.urgently.setValue(1)
+            this.view.formfields.status.setValue(1)
+        })
+
         this.view.closeBtn.attachEvent("onItemClick", () => {
-            this.view.form.clear()
+            this.clearForm()
             this.view.window.hide()
         })
 
@@ -82,9 +91,10 @@ export class TaskWindow {
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
              switch (this.type) {
                 case TASK_WINDOW_TYPE.create:
+                    console.log(this.fetch())
                     if (this.view.form.validate()) {
                         taskModel.createTask(this.fetch()).then(() => {
-                            this.view.form.clear()
+                            this.clearForm()
                             this.onChange()
                             this.hide()
                         })
@@ -98,7 +108,7 @@ export class TaskWindow {
                 case TASK_WINDOW_TYPE.delete:
                     if (this.view.form.validate()) {
                         taskModel.deleteTask(this.fetch()).then(() => {
-                            this.view.form.clear()
+                            this.clearForm()
                             this.onChange()
                             this.hide()
                         })
@@ -110,14 +120,13 @@ export class TaskWindow {
                     }
                 default:
                     if (this.view.form.validate()) {
-                        console.log(this.fetch(), 'fetch')
                         taskModel.updateTask(this.fetch()).then(() => {
-                                this.view.form.clear()
-                                this.onChange()
-                                this.hide()
-                            })
-                            break;
-                        }
+                            this.clearForm()
+                            this.onChange()
+                            this.hide()
+                        })
+                        break;
+                    }
                     else {
                         webix.message("Ваша форма не валидна")
                         break;
@@ -143,24 +152,23 @@ export class TaskWindow {
     }
 
     show(type) {
-        //this.names = employees
         switch (type) {
             case TASK_WINDOW_TYPE.create:
                 this.view.windowLabel.define("template", "Создание задачи")
                 this.view.windowLabel.refresh()
                 this.view.formfields.projectID.define("value", this.projectId)
                 this.view.formfields.projectID.refresh()
-                this.view.formfields.name.define("readonly", false)
+                this.view.formfields.name.enable()
                 this.view.formfields.name.refresh()
                 this.view.formfields.description.define("readonly", false)
+                webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
+                webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
                 this.view.formfields.description.refresh()
                 this.view.formfields.performer.enable()
-                //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
                 this.view.formfields.status.define("options", [this.task_status[0], this.task_status[1]])
                 this.view.formfields.status.disable()
                 this.view.formfields.status.refresh()
-                
                 this.view.formfields.urgently.enable()
                 this.view.formfields.urgently.refresh()
                 this.view.formfields.planTimeLabel.hide()
@@ -170,18 +178,21 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Создать")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.show()
+                this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
 
             case TASK_WINDOW_TYPE.new:
                 this.view.windowLabel.define("template", "Новая задача")
                 this.view.windowLabel.refresh()
-                this.view.formfields.name.define("readonly", true)
+                this.view.formfields.name.disable()
                 this.view.formfields.name.refresh()
                 this.view.formfields.description.define("readonly", true)
+                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
                 this.view.formfields.description.refresh()
                 this.view.formfields.performer.enable()
-                //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
                 this.view.formfields.status.disable()
                 this.view.formfields.status.refresh()
@@ -194,18 +205,21 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
 
             case TASK_WINDOW_TYPE.assigned:
                 this.view.windowLabel.define("template", "Назначенная задача")
                 this.view.windowLabel.refresh()
-                this.view.formfields.name.define("readonly", true)
+                this.view.formfields.name.disable()
                 this.view.formfields.name.refresh()
                 this.view.formfields.description.define("readonly", true)
+                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
                 this.view.formfields.description.refresh()
                 this.view.formfields.performer.disable()
-                //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
                 this.view.formfields.status.enable()
                 this.view.formfields.status.define("options", [this.task_status[1], this.task_status[2], this.task_status[4]])
@@ -221,18 +235,21 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
 
             case TASK_WINDOW_TYPE.inJob:
                 this.view.windowLabel.define("template", "Задача в работе")
                 this.view.windowLabel.refresh()
-                this.view.formfields.name.define("readonly", true)
+                this.view.formfields.name.disable()
                 this.view.formfields.name.refresh()
                 this.view.formfields.description.define("readonly", true)
+                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
                 this.view.formfields.description.refresh()
                 this.view.formfields.performer.disable()
-                //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
                 this.view.formfields.status.enable()
                 this.view.formfields.status.define("options", [this.task_status[2], this.task_status[3], this.task_status[4], this.task_status[5]])
@@ -248,18 +265,21 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
 
             case TASK_WINDOW_TYPE.pause:
                 this.view.windowLabel.define("template", "Пауза")
                 this.view.windowLabel.refresh()
-                this.view.formfields.name.define("readonly", true)
+                this.view.formfields.name.disable()
                 this.view.formfields.name.refresh()
                 this.view.formfields.description.define("readonly", true)
+                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
                 this.view.formfields.description.refresh()
                 this.view.formfields.performer.disable()
-                //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
                 this.view.formfields.status.enable()
                 this.view.formfields.status.define("options", [this.task_status[2], this.task_status[3], this.task_status[4], this.task_status[5]])
@@ -275,18 +295,21 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
 
             case TASK_WINDOW_TYPE.coordination:
                 this.view.windowLabel.define("template", "Задача на согласовании")
                 this.view.windowLabel.refresh()
-                this.view.formfields.name.define("readonly", false)
+                this.view.formfields.name.enable()
                 this.view.formfields.name.refresh()
                 this.view.formfields.description.define("readonly", false)
+                webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
+                webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
                 this.view.formfields.description.refresh()
                 this.view.formfields.performer.enable()
-                //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
                 this.view.formfields.status.enable()
                 this.view.formfields.status.define("options", [this.task_status[0], this.task_status[1], this.task_status[4]])
@@ -300,18 +323,21 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
 
             case TASK_WINDOW_TYPE.done:
                 this.view.windowLabel.define("template", "Задача выполнена")
                 this.view.windowLabel.refresh()
-                this.view.formfields.name.define("readonly", true)
+                this.view.formfields.name.disable()
                 this.view.formfields.name.refresh()
                 this.view.formfields.description.define("readonly", true)
+                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
                 this.view.formfields.description.refresh()
                 this.view.formfields.performer.disable()
-                //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
                 this.view.formfields.status.disable()
                 this.view.formfields.status.define("options", this.task_status)
@@ -326,18 +352,19 @@ export class TaskWindow {
                 this.view.formfields.factTime.disable()
                 this.view.windowConfirmBtn.hide()
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
             
             case TASK_WINDOW_TYPE.delete:
                 this.view.windowLabel.define("template", "Удаление задачи")
                 this.view.windowLabel.refresh()
-                this.view.formfields.name.define("readonly", true)
+                this.view.formfields.name.disable()
                 this.view.formfields.name.refresh()
                 this.view.formfields.description.define("readonly", true)
                 this.view.formfields.description.refresh()
                 this.view.formfields.performer.disable()
-                //this.view.formfields.performer.define("options", employees)
                 this.view.formfields.performer.refresh()
                 this.view.formfields.status.disable()
                 this.view.formfields.status.refresh()
@@ -352,6 +379,8 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Удалить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
             
@@ -388,6 +417,12 @@ export class TaskWindow {
 
     setId(projectId) {
         this.projectId = projectId
+    }
+
+    clearForm() {
+        this.view.form.clear()
+        this.view.form.clearValidation()
+        this.view.formfields.urgently.setValue(1)
     }
 }
 

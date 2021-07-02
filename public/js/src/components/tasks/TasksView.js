@@ -30,7 +30,7 @@ export default function TasksView(TASK_STATUS){
                     css:"movies_tasks",
                     select:true,
                     type: {
-                        height: 145,
+                        height: 155,
                         width: 230
                     },
                     drag: false,
@@ -38,9 +38,8 @@ export default function TasksView(TASK_STATUS){
                         return "<div class='overall_tasks' style = 'border: 4px solid " + TASK_URGENTLY_COLOR[obj.urgently-1].value +"'>" + 
                         "<div class ='title_tasks'>" + obj.name + "</div>" + 
                         "</br><div class='status_tasks'>Статус: " + TASK_STATUS[obj.status-1].value + "</div>" + 
-                        "</br> <div class='performer_tasks'>Исполнитель: </div>" + 
-                        "</br> <div class='performer_tasks'>" + obj.performer_name + " " + obj.performer_last_name + "</div>" +
-                        "</div>"            
+                        "</br> <div class='performer_tasks'>Исполнитель: </br>" + obj.performer_name + "</br>" + obj.performer_last_name +
+                        "</div></div>"            
                     },
                     data:[]
                 },
@@ -58,7 +57,7 @@ export default function TasksView(TASK_STATUS){
                     css:"movies_tasks",
                     select:true,
                     type: {
-                        height: 145,
+                        height: 155,
                         width: 230
                     },
                     drag: false,
@@ -66,9 +65,8 @@ export default function TasksView(TASK_STATUS){
                         return "<div class='overall_tasks' style = 'border: 4px solid " + TASK_URGENTLY_COLOR[obj.urgently-1].value +"'>" + 
                         "<div class ='title_tasks'>" + obj.name + "</div>" + 
                         "</br><div class='status_tasks'>Статус: " + TASK_STATUS[obj.status-1].value + "</div>" + 
-                        "</br> <div class='performer_tasks'>Исполнитель: </div>" + 
-                        "</br> <div class='performer_tasks'>" + obj.performer_name + " " + obj.performer_last_name + "</div>" +
-                        "</div>"            
+                        "</br> <div class='performer_tasks'>Исполнитель: </br>" + obj.performer_name + "</br>" + obj.performer_last_name +
+                        "</div></div>"             
                     },                                
                     data: []
                 },
@@ -86,7 +84,7 @@ export default function TasksView(TASK_STATUS){
                     css:"movies_tasks",
                     select:true,
                     type: {
-                        height: 145,
+                        height: 155,
                         width: 230
                     },
                     drag: false,
@@ -94,9 +92,8 @@ export default function TasksView(TASK_STATUS){
                         return "<div class='overall_tasks' style = 'border: 4px solid " + TASK_URGENTLY_COLOR[obj.urgently-1].value +"'>" + 
                         "<div class ='title_tasks'>" + obj.name + "</div>" + 
                         "</br><div class='status_tasks'>Статус: " + TASK_STATUS[obj.status-1].value + "</div>" + 
-                        "</br> <div class='performer_tasks'>Исполнитель: </div>" + 
-                        "</br> <div class='performer_tasks'>" + obj.performer_name + " " + obj.performer_last_name + "</div>" +
-                        "</div>"            
+                        "</br> <div class='performer_tasks'>Исполнитель: </br>" + obj.performer_name + "</br>" + obj.performer_last_name +
+                        "</div></div>"             
                     },                
                     data: []
                 },
@@ -115,7 +112,7 @@ export default function TasksView(TASK_STATUS){
                     css:"movies_tasks",
                     select:true,
                     type: {
-                        height: 145,
+                        height: 155,
                         width: 230
                     },
                     drag: false,
@@ -123,9 +120,8 @@ export default function TasksView(TASK_STATUS){
                         return "<div class='overall_tasks' style = 'border: 4px solid " + TASK_URGENTLY_COLOR[obj.urgently-1].value +"'>" + 
                         "<div class ='title_tasks'>" + obj.name + "</div>" + 
                         "</br><div class='status_tasks'>Статус: " + TASK_STATUS[obj.status-1].value + "</div>" + 
-                        "</br> <div class='performer_tasks'>Исполнитель: </div>" + 
-                        "</br> <div class='performer_tasks'>" + obj.performer_name + " " + obj.performer_last_name + "</div>" +
-                        "</div>"            
+                        "</br> <div class='performer_tasks'>Исполнитель: </br>" + obj.performer_name + "</br>" + obj.performer_last_name +
+                        "</div></div>"      
                     },                                
                     data: []
                 },
@@ -144,7 +140,7 @@ export default function TasksView(TASK_STATUS){
                     css:"movies_tasks",
                     select:true,
                     type: {
-                        height: 145,
+                        height: 155,
                         width: 230
                     },
                     drag: false,
@@ -153,9 +149,8 @@ export default function TasksView(TASK_STATUS){
                         return "<div class='overall_tasks' style = 'border: 4px solid " + TASK_URGENTLY_COLOR[obj.urgently-1].value +"'>" + 
                         "<div class ='title_tasks'>" + obj.name + "</div>" + 
                         "</br><div class='status_tasks'>Статус: " + TASK_STATUS[obj.status-1].value + "</div>" + 
-                        "</br> <div class='performer_tasks'>Исполнитель: </div>" + 
-                        "</br> <div class='performer_tasks'>" + obj.performer_name + " " + obj.performer_last_name + "</div>" +
-                        "</div>"            
+                        "</br> <div class='performer_tasks'>Исполнитель: </br>" + obj.performer_name + "</br>" + obj.performer_last_name +
+                        "</div></div>"           
                     },                 
                     data: []
                 },

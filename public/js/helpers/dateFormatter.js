@@ -5,7 +5,7 @@ export function FormatDate(date) {
 }
 
 export function FormatTime(date) {
-    if (date == undefined){
+    if (date == undefined || date == "Invalid Date"){
         date = '00:00:00'
     }
     else {

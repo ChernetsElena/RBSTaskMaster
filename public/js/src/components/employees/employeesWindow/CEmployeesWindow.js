@@ -25,7 +25,8 @@ export class EmployeesWindow {
         this.view = {
             window: $$('windowEmployee'),
             windowLabel: $$('employeeWindowLabel'),
-            windowConfirmBtn: $$('addEmployeeBtn'),
+            windowConfirmBtn: $$('employeeWindowConfirmBtn'),
+            windowClearBtn: $$('employeeWindowClearBtn'),
             closeBtn: $$('employeeWindowCloseButton'),
             form: $$('formWindowEmployee'),
             formfields: {
@@ -49,6 +50,15 @@ export class EmployeesWindow {
         this.view.closeBtn.attachEvent("onItemClick", () => {
             this.clearForm()
             this.view.window.hide()
+        })
+
+        this.view.windowClearBtn.attachEvent("onItemClick", () => {
+            this.view.formfields.name.setValue("")
+            this.view.formfields.lastName.setValue("")
+            this.view.formfields.middleName.setValue("")
+            this.view.formfields.position.setValue("")
+            this.view.formfields.email.setValue("")
+            this.view.formfields.birth.setValue("")
         })
 
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
@@ -116,6 +126,8 @@ export class EmployeesWindow {
                 this.view.windowLabel.refresh()
                 this.view.windowConfirmBtn.define("value", "Добавить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.show()
+                this.view.windowClearBtn.refresh()
                 this.enableForm()
                 break;
             
@@ -124,6 +136,8 @@ export class EmployeesWindow {
                 this.view.windowLabel.refresh()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.enableForm()
                 break;
             
@@ -132,6 +146,8 @@ export class EmployeesWindow {
                 this.view.windowLabel.refresh()
                 this.view.windowConfirmBtn.define("value", "Удалить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.windowClearBtn.hide()
+                this.view.windowClearBtn.refresh()
                 this.disableForm()
                 break;
             
@@ -172,17 +188,6 @@ export class EmployeesWindow {
         this.view.formfields.email.refresh()
         this.view.formfields.birth.enable()
         this.view.formfields.birth.refresh()
-        // this.view.formfields.name.define("readonly", false)
-        // this.view.formfields.name.refresh()
-        // this.view.formfields.lastName.define("readonly", false)
-        // this.view.formfields.lastName.refresh()
-        // this.view.formfields.middleName.define("readonly", false)
-        // this.view.formfields.middleName.refresh()
-        // this.view.formfields.position.enable()
-        // this.view.formfields.email.define("readonly", false)
-        // this.view.formfields.email.refresh()
-        // this.view.formfields.birth.define("readonly", false)
-        // this.view.formfields.birth.refresh()
     }
 
     disableForm() {
@@ -197,17 +202,6 @@ export class EmployeesWindow {
         this.view.formfields.email.refresh()
         this.view.formfields.birth.disable()
         this.view.formfields.birth.refresh()
-        // this.view.formfields.name.define("readonly", true)
-        // this.view.formfields.name.refresh()
-        // this.view.formfields.lastName.define("readonly", true)
-        // this.view.formfields.lastName.refresh()
-        // this.view.formfields.middleName.define("readonly", true)
-        // this.view.formfields.middleName.refresh()
-        // this.view.formfields.position.disable()
-        // this.view.formfields.email.define("readonly", true)
-        // this.view.formfields.email.refresh()
-        // this.view.formfields.birth.define("readonly", true)
-        // this.view.formfields.birth.refresh()
     }
 }
 

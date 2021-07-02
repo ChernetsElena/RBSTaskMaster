@@ -73,6 +73,7 @@ export default function TasksWindowView(employees, task_status, task_urgently){
                         height: 150,
                         labelWidth: 100,
                         align : 'center',
+                        css: 'disable_description'
                     },
                     {
                         view:"combo", 
@@ -175,6 +176,15 @@ export default function TasksWindowView(employees, task_status, task_urgently){
                             width: 150,
                             top: 20,
                             css: "webix_primary",
+                        }, 
+                        {
+                            view:"button", 
+                            id:"taskWindowClearBtn", 
+                            value:"Очистить",
+                            width: 150,
+                            top: 20,
+                            css: "webix_secondary",
+                            hidden: true
                         }, 
                         {},
                     ]}

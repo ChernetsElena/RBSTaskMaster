@@ -3,6 +3,65 @@
   src: url('../fonts/Roboto-Medium.ttf');
 }
 
+.webix_invalid .webix_el_box input,
+.webix_invalid .webix_custom_radio,
+.webix_invalid .webix_el_box .webix_inp_static,
+.webix_invalid .webix_el_box select,
+.webix_invalid .webix_el_box textarea,
+input.webix_invalid,
+select.webix_invalid,
+textarea.webix_invalid {
+  background-color: #ffffff;
+  border-color: #ff7e7e;
+}
+
+.webix_view.webix_control .webix_disabled_box input,
+.webix_view.webix_control .webix_disabled_box select,
+.webix_view.webix_control .webix_disabled_box textarea,
+.webix_view.webix_control .webix_disabled_box text,
+.webix_view.webix_control .webix_disabled_box .webix_inp_static,
+.webix_view.webix_control .webix_disabled_box .webix_slider_right,
+.webix_view.webix_control .webix_disabled_box .webix_slider_handle {
+  color: rgb(59, 59, 59);
+  background: rgb(255, 255, 255);
+}
+
+.disable_description .webix_inp_textarea {
+    border: 1px solid #ececec;
+    cursor: default;
+}
+
+.disable_description .webix_inp_textarea:focus {
+    border: 1px solid #ececec;
+    box-shadow: 0 0 1px #ffffff inset;
+    cursor: default;
+}
+
+
+.enable_description .webix_inp_textarea {
+    border: 1px solid #CCD7E6;
+    cursor: text;
+}
+
+.enable_description .webix_inp_textarea:focus {
+    border: 1px solid #268fd5;
+    box-shadow: 0 0 1px #ffffff inset;
+    cursor: text;
+}
+
+.webix_view.webix_control .webix_disabled_box .webix_inp_label{
+    color:rgb(59, 59, 59);
+}
+
+.webix_inp_label {
+    color:rgb(59, 59, 59);
+}
+
+.webix_view > .webix_disabled {
+    cursor: default;
+    background-color: #fff;
+}
+
 .webix_list {
     background: none;
     border: 2px solid white;
@@ -22,9 +81,9 @@
 }
 
 .overall_tasks{
+    height: 150px;
     font-family: RobotoMedium;
     border-radius: 4px;
-    height: 140px;
 }
   
 .title_tasks{
@@ -50,8 +109,8 @@
     overflow:hidden;
 }
 
-.performer_tasks{
-    height:20px;
+.performer_tasks {
+    height:60px;
     width: 200px;
     line-height: 20px;
     text-indent:5px;
@@ -61,5 +120,4 @@
     text-align: end;
     font-weight:bold;
     float: left;
-    
 }

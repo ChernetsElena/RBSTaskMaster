@@ -85,6 +85,7 @@ export default function ProjectsWindowView(employees){
                         width: 400,
                         height: 200,
                         align : 'center',
+                        css: 'disable_description'
                     },
                     {
                         view:"combo", 
@@ -126,6 +127,16 @@ export default function ProjectsWindowView(employees){
                             align : 'center',
                             top: 20,
                             css: "webix_primary"
+                        }, 
+                        {
+                            view:"button", 
+                            id:"projectWindowClearBtn", 
+                            value:"Очистить",
+                            width: 150,
+                            align : 'center',
+                            top: 20,
+                            css: "webix_secondary",
+                            hidden: "true"
                         }, 
                         {},
                     ]} 

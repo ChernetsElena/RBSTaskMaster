@@ -40,7 +40,8 @@ export default function EmployeesWindowView(positions){
                         width: 400,
                         labelWidth: 150,
                         align : 'center',
-                        attributes: {required: true}
+                        attributes: {required: true},
+                        //invalidMessage:"Пожалуйста, введите фамилию" 
                     },
                     {
                         view:"text", 
@@ -50,7 +51,8 @@ export default function EmployeesWindowView(positions){
                         width: 400,
                         labelWidth: 150,
                         align : 'center',
-                        attributes: {required: true}
+                        attributes: {required: true},
+                        //invalidMessage:"Пожалуйста, введите имя" 
                     },
                     {
                         view:"text", 
@@ -80,7 +82,8 @@ export default function EmployeesWindowView(positions){
                         width: 400,
                         labelWidth: 150,
                         align : 'center',
-                        attributes: {required: true}
+                        attributes: {required: true},
+                        //invalidMessage:"Некорректный адрес почты" 
                     },
                     {
                         view:"datepicker", 
@@ -90,18 +93,28 @@ export default function EmployeesWindowView(positions){
                         width: 400,
                         labelWidth: 150,
                         align : 'center',
-                        attributes: {required: true}
+                        attributes: {required: true},
+                        //invalidMessage:"Некорректная дата" 
                     },
                     {cols: [
                         {},
                         {
                             view:"button", 
-                            id:"addEmployeeBtn", 
+                            id:"employeeWindowConfirmBtn", 
                             value:"Готово",
                             width: 150,
                             align : 'center',
                             top: 20,
                             css: "webix_primary"
+                        },
+                        {
+                            view:"button", 
+                            id:"employeeWindowClearBtn", 
+                            value:"Очистить",
+                            width: 150,
+                            align : 'center',
+                            top: 20,
+                            css: "webix_secondary"
                         },
                         {} 
                     ]} 
@@ -115,6 +128,11 @@ export default function EmployeesWindowView(positions){
             "name":webix.rules.isNotEmpty,
             "email":webix.rules.isEmail,
             "birth":webix.rules.isNotEmpty,
+            "birth": function(value){ 
+                let ageDate= new Date(new Date() - value)
+                let treashold = new Date(1984, 0, 1)
+                return ageDate > treashold
+            },
         }
     }
     }
