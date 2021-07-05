@@ -2,6 +2,7 @@ import TaskWindowView from './TasksWindowView.js';
 import taskModel from '../../../models/taskModel.js';
 import employeeModel from '../../../models/employeeModel.js'
 import statusModel from '../../../models/statusModel.js'
+import {FormatTime} from '../../../../helpers/dateFormatter.js';
 
 export class TaskWindow {
     constructor(){
@@ -11,6 +12,7 @@ export class TaskWindow {
         this.projectId
         this.names
         this.task_status = []
+        this.selectTask
     }
 
     init(onChange) {
@@ -78,15 +80,16 @@ export class TaskWindow {
         this.view.formfields.status.attachEvent("onChange", () => {
             let status = this.view.formfields.status.getValue()
             let performer = this.view.formfields.performer.getValue()
-            let a = (performer == 0) || (performer == "")
             
-            if ((status == "2") && a) {
+            let isEmptyPerformer = (performer == 0) || (performer == "")
+            
+            if ((status == "2") && isEmptyPerformer) {
                 this.view.formfields.status.setValue(1)
             }
-            if ((status == "1") && !a) {
+            if ((status == "1") && !isEmptyPerformer) {
                 this.view.formfields.status.setValue(2)
             }
-         })
+        })
 
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
              switch (this.type) {
@@ -101,7 +104,7 @@ export class TaskWindow {
                         break;
                     }
                     else {
-                        webix.message("Ваша форма не валидна")
+                        //webix.message("Ваша форма не валидна")
                         break;
                     }
 
@@ -115,9 +118,10 @@ export class TaskWindow {
                         break;
                     }
                     else {
-                        webix.message("Ваша форма не валидна")
+                        //webix.message("Ваша форма не валидна")
                         break;
                     }
+
                 default:
                     if (this.view.form.validate()) {
                         taskModel.updateTask(this.fetch()).then(() => {
@@ -128,14 +132,17 @@ export class TaskWindow {
                         break;
                     }
                     else {
-                        webix.message("Ваша форма не валидна")
+                        //webix.message("Ваша форма не валидна")
                         break;
                     }
             }
         })
 
         this.view.deleteBtn.attachEvent("onItemClick", () => {
+            this.selectTask = this.view.form.getCleanValues()
+            this.clearForm()
             this.view.window.hide()
+            this.parse(this.selectTask)
             this.show(TASK_WINDOW_TYPE.delete, this.names)
         })
     }
@@ -180,6 +187,7 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.refresh()
                 this.view.windowClearBtn.show()
                 this.view.windowClearBtn.refresh()
+                
                 this.view.window.resize()
                 break;
 
@@ -207,6 +215,7 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
+                
                 this.view.window.resize()
                 break;
 
@@ -237,6 +246,7 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
+              
                 this.view.window.resize()
                 break;
 
@@ -267,6 +277,7 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
+               
                 this.view.window.resize()
                 break;
 
@@ -297,6 +308,7 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
+                
                 this.view.window.resize()
                 break;
 
@@ -325,6 +337,7 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
+                
                 this.view.window.resize()
                 break;
 
@@ -354,6 +367,7 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
+                
                 this.view.window.resize()
                 break;
             

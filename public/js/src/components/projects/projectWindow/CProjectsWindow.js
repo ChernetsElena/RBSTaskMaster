@@ -9,6 +9,7 @@ export class ProjectsWindow {
         this.type
         this.onChange
         this.names
+        this.selectProject
     }
 
     init(onChange) {
@@ -100,7 +101,10 @@ export class ProjectsWindow {
         })
 
         this.view.deleteBtn.attachEvent("onItemClick", () => {
+            this.selectProject = this.view.form.getCleanValues()
+            this.clearForm()
             this.view.window.hide()
+            this.parse(this.selectProject)
             this.show(PROJECT_WINDOW_TYPE.delete, this.names)
         })
     }

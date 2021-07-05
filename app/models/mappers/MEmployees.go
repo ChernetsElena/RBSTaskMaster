@@ -339,12 +339,31 @@ func (m *MEmployee) Update(edbt *EmployeeDBType) (err error) {
 // Delete удаление сотрудника
 func (m *MEmployee) Delete(edbt *EmployeeDBType) (err error) {
 
-	// запрос на установку статуса согласование и удаление исполнителя задач с удаляемым исполнителем
+	// запрос на перенос задачи в колонку согласование, если удаляемый сотрудник является исполнителем
+	// если удаляемый сотрудник также является тимлидом, данные не изменяются
 	query := `
 		UPDATE "taskmaster".t_tasks
-		SET 
-			fk_performer = null,
-			fk_status = 5
+		SET
+			fk_performer = CASE WHEN (
+				$1 IN (
+					SELECT fk_teamlead 
+					FROM "taskmaster".t_projects
+					GROUP BY fk_teamlead)
+				)
+				THEN fk_performer
+				ELSE null
+				END,
+			
+			fk_status = CASE WHEN (
+				$1 IN (
+					SELECT fk_teamlead 
+					FROM "taskmaster".t_projects
+					GROUP BY fk_teamlead)
+				)
+				THEN fk_status
+				ELSE 5
+				END
+
 		WHERE fk_performer = $1;
 	`
 

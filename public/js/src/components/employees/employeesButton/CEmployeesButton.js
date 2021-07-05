@@ -7,11 +7,13 @@ export class EmployeesButton {
         this.view
         this.window
         this.showProjectsView
+        this.refreshProjects
     }
 
-    init(employeeWindow, showProjectsViewCB){
+    init(employeeWindow, showProjectsViewCB, refreshProjectsCB){
         this.window = employeeWindow
         this.showProjectsView = showProjectsViewCB
+        this.refreshProjects = refreshProjectsCB
     }
 
     config() {
@@ -29,6 +31,7 @@ export class EmployeesButton {
         })
 
         this.view.toProjectsBtn.attachEvent("onItemClick", () => {
+            this.refreshProjects()
             this.showProjectsView()
         })
     }

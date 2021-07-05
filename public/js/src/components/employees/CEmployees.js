@@ -12,9 +12,9 @@ export class Employees {
         this.FormatDate = FormatDate
     }
     
-    init (employeesButton, showProjectsViewCB) {
+    init (employeesButton, showProjectsViewCB, refreshProjectsCB) {
         this.employeesButton = employeesButton
-        this.employeesButton.init(this.window, showProjectsViewCB)
+        this.employeesButton.init(this.window, showProjectsViewCB, refreshProjectsCB)
         this.window.init(
             () => { this.refreshView() }
         )

@@ -1,4 +1,4 @@
-//import {TASK_URGENTLY} from '../../../data/dataTasks.js'
+import {FormatTime} from '../../../../helpers/dateFormatter.js';
 
 export default function TasksWindowView(employees, task_status, task_urgently){
     let headText = 'Новая задача' 
@@ -6,6 +6,7 @@ export default function TasksWindowView(employees, task_status, task_urgently){
     return {
         view:"window",
         id:"taskWindow",
+        move: true,
         head: {cols: [
             {
                 view: 'template',
@@ -31,7 +32,6 @@ export default function TasksWindowView(employees, task_status, task_urgently){
                 type: "icon",
                 icon: "wxi-close",
                 width: 50,
-
             }
         ]},
         position: "center",
@@ -193,10 +193,23 @@ export default function TasksWindowView(employees, task_status, task_urgently){
         ],
         css:{"border-color":"orange"},
         rules:{
-            "name":webix.rules.isNotEmpty,
-            //"performer":webix.rules.isNotEmpty,
-            "fact_time":webix.rules.isNotEmpty,
-            "plan_time":webix.rules.isNotEmpty,
+            "name": webix.rules.isNotEmpty,
+            $obj:function(obj){
+
+                if (!webix.rules.isNotEmpty(obj.name)) {
+                    webix.message("Пожалуйста, введите название задачи", 'error')
+                    return false
+                }
+                if ((obj.status == "3" || obj.status == "4") && FormatTime(obj.plan_time) == '00:00:00') {
+                    webix.message("Пожалуйста, введите планируемое время", 'error')
+                    return false
+                }
+                if (obj.status == "6" && FormatTime(obj.fact_time) == '00:00:00') {
+                    webix.message("Пожалуйста, введите фактическое время", 'error')
+                    return false
+                }
+                return true
+            }
         }
     }
     }

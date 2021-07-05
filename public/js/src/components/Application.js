@@ -32,6 +32,8 @@ export class Application {
             this.projectsButton, 
             this.tasks,
             this.tasksButton,
+            this.employees,
+            this.employeesButton,
             () => {
                 $$('projectRow').hide()
                 $$('employeeRow').hide()
@@ -45,14 +47,12 @@ export class Application {
                 $$('tasksRow').show()
         })
 
-        this.employees.init(this.employeesButton, () => {
-            $$('projectRow').hide()
-            $$('employeeRow').hide()
-            $$('tasksRow').hide()
-            $$('projectRow').show()
-        })
-
-        //this.tasksButton.init()
+        // this.employees.init(this.employeesButton, () => {
+        //     $$('projectRow').hide()
+        //     $$('employeeRow').hide()
+        //     $$('tasksRow').hide()
+        //     $$('projectRow').show()
+        // })
     }
 
     attachEvents() {

@@ -7,6 +7,7 @@ export default function EmployeesWindowView(positions){
         id:"windowEmployee",
         position: "center",
         modal: true,
+        move: true,
         head: {cols: [
             {
                 view: 'template',
@@ -131,7 +132,17 @@ export default function EmployeesWindowView(positions){
             "birth": function(value){ 
                 let ageDate= new Date(new Date() - value)
                 let treashold = new Date(1984, 0, 1)
-                return ageDate > treashold
+                if (ageDate < treashold) {
+                    webix.message("Сотруднику должно быть больше 14 лет", "error")
+                    return false
+                }
+                if (value == null) {
+                    webix.message("Введите дату рождения", "error")
+                    return false
+                }
+                else {
+                    return true
+                }
             },
         }
     }

@@ -6,6 +6,7 @@ export default function ProjectsWindowView(employees){
         id:"projectWindow",
         position: "center",
         modal: true,
+        move: true,
         head: {cols: [
                 {
                     view: 'template',
@@ -13,7 +14,6 @@ export default function ProjectsWindowView(employees){
                     template: headText,
                     borderless: true,
                     type:"header",
-                    //width: 300,
                 },
                 {},
                 {
