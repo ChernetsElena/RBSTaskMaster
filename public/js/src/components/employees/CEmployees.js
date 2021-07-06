@@ -10,13 +10,22 @@ export class Employees {
         this.window = new EmployeesWindow()
         this.employeesButton
         this.FormatDate = FormatDate
+        this.toolbar
     }
     
-    init (employeesButton, showProjectsViewCB, refreshProjectsCB) {
+    init (employeesButton, showProjectsViewCB, refreshProjectsCB, toolbar, showEmployeesViewCB, onLogout) {
         this.employeesButton = employeesButton
+        this.toolbar = toolbar
         this.employeesButton.init(this.window, showProjectsViewCB, refreshProjectsCB)
+
+        this.toolbar.init(showEmployeesViewCB, onLogout)
+
         this.window.init(
-            () => { this.refreshView() }
+            () => { 
+                this.refreshView()
+                this.toolbar.refreshEmployeeLabel() 
+            },
+            this.toolbar.onLogout
         )
     }
 
@@ -44,6 +53,7 @@ export class Employees {
 
                 if (id.column == 'edit') {
                     this.window.parse(selectedEmployee)
+                    console.log(selectedEmployee)
                     this.showWindow(EMPLOYEE_WINDOW_TYPE.update);
                 }
                 
@@ -53,7 +63,6 @@ export class Employees {
                 }
             })
         })
-
     }
 
     showWindow(type) {
@@ -66,7 +75,7 @@ export class Employees {
                 employee.birth = this.FormatDate(employee.birth)
             })
             this.view.employeesTable.clearAll()
-            this.view.employeesTable.parse(data)
+            this.view.employeesTable.parse(data)   
         })
     }
 }

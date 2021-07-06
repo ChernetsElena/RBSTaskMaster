@@ -8,19 +8,19 @@ export default function ToolbarView(){
         cols: [
             {width: 50},
             {
-                view:"button", 
-                id:"toolbarUserButton",
-                type:"icon", 
-                icon:"wxi-user",
-                width: 50,
+                view: "button", 
+                id: "toolbarUserButton",
+                type: "icon", 
+                icon: "wxi-user",
+                label: "загрузка...",
                 height: 50,
-                
+                autowidth:true
             },
             {width: 10},
             {
-                view:"button", 
-                id:"toolbarEmployeesButton",
-                label:"Сотрудники",
+                view: "button", 
+                id: "toolbarEmployeesButton",
+                label: "Сотрудники",
                 width: 150
             },
             {

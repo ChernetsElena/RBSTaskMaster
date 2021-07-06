@@ -37,23 +37,6 @@ export class Tasks {
         this.task_status = []
         this.task_urgently = []
 
-        employeeModel.getEmployees().then((data) => {
-            data.map((employee) => {
-                this.names.push({id: `${employee.id}`, value: `${employee.last_name} ${employee.name}`})
-            })
-        })
-
-        statusModel.getStatuses().then((data) => {
-            data.map((status) => {
-                this.task_status.push({id: `${status.ID}`, value: `${status.value}`})
-            })
-        })
-
-        urgentlyModel.getUrgently().then((data) => {
-            data.map((urgently) => {
-                this.task_urgently.push({id: `${urgently.ID}`, value: `${urgently.value}`})
-            })
-        })
     }
 
     config() {
@@ -71,6 +54,24 @@ export class Tasks {
             coordinationList: $$('tasksCoordinationList'),
             doneList: $$('tasksDoneList'),
         }
+
+        employeeModel.getEmployees().then((data) => {
+            data.map((employee) => {
+                this.names.push({id: `${employee.id}`, value: `${employee.last_name} ${employee.name}`})
+            })
+        })
+
+        statusModel.getStatuses().then((data) => {
+            data.map((status) => {
+                this.task_status.push({id: `${status.ID}`, value: `${status.value}`})
+            })
+        })
+
+        urgentlyModel.getUrgently().then((data) => {
+            data.map((urgently) => {
+                this.task_urgently.push({id: `${urgently.ID}`, value: `${urgently.value}`})
+            })
+        })
 
         this.window.attachEvents()
 

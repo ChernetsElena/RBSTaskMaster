@@ -19,12 +19,23 @@ export class Project {
         this.clickTimeout
     }
 
-    init (projectsButton, tasks, tasksButton, employees, employeesButton, showProjectsViewCB, showTasksViewCB) {
+    init (
+        projectsButton, 
+        tasks, 
+        tasksButton, 
+        employees, 
+        employeesButton, 
+        toolbar, 
+        showProjectsViewCB, 
+        showTasksViewCB,
+        showEmployeesViewCB,
+        onLogout) {
         this.showTasksView = showTasksViewCB
         this.projectsButton = projectsButton
         this.tasks = tasks
         this.employees = employees
         this.employeesButton = employeesButton
+        this.toolbar = toolbar
 
         this.tasks.init(tasksButton, showProjectsViewCB)
 
@@ -33,11 +44,15 @@ export class Project {
             showProjectsViewCB, 
             () => { 
                 this.refreshView() 
-            }
+            },
+            toolbar, 
+            showEmployeesViewCB,
+            onLogout
         )
 
         this.projectsButton.init(this.window)
 
+      
         this.window.init(
             () => { this.refreshView() }
         )

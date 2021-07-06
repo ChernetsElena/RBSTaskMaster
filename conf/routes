@@ -7,7 +7,12 @@ module:testrunner
 # module:jobs
 
 
-GET     /                                       App.Index
+GET     /                                       CIndex.Index
+
+GET     /user/employee                          CAuth.GetCurrentEmployee
+GET     /user/logout                            CAuth.Logout
+POST    /user/authorize/check                   CAuth.Check
+POST    /user/login                             CAuth.Login
 
 GET     /task/project/:id                       CTask.GetAllByProject 
 GET     /task/:id                               CTask.GetById
@@ -32,6 +37,8 @@ GET     /position/all                           CPosition.GetAll
 GET     /status/all                             CStatus.GetAll
 
 GET     /urgently/all                           CUrgently.GetAll
+
+GET     /401                                    CError.Unauthorized
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

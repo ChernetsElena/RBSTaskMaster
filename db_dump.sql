@@ -39,6 +39,15 @@ CREATE TABLE taskmaster.t_employees (
 
 COMMENT ON TABLE taskmaster.t_employees IS 'таблица сотрудников';
 
+CREATE TABLE taskmaster.t_users (
+    pk_id serial PRIMARY KEY,
+    fk_employee int NOT NULL REFERENCES taskmaster.t_employees,
+    c_login varchar(50) NOT NULL,
+    c_password bytea NOT NULL
+);
+
+COMMENT ON TABLE taskmaster.t_users IS 'таблица пользователей';
+
 CREATE TABLE taskmaster.t_projects (
     pk_id serial PRIMARY KEY,
     fk_teamlead int REFERENCES taskmaster.t_employees,
@@ -91,6 +100,10 @@ VALUES (2, 3, 'Петр', 'Петров','Петрович', 'p.petrov@mail.ru',
 
 INSERT INTO taskmaster.t_employees (pk_id, fk_position, c_name, c_lastname, c_middlename, c_email, c_date_of_birth) 
 VALUES (3, 2, 'Сидр', 'Сидоров','Сидорович', 's.sidorov@mail.ru', '1985-07-11');
+
+
+INSERT INTO taskmaster.t_users (pk_id, fk_employee, c_login, c_password) 
+VALUES (1, 31, 'admin', '\x21232f297a57a5a743894a0e4a801fc3');
 
 
 INSERT INTO taskmaster.t_projects (pk_id, fk_teamlead, c_name, c_description, c_color_one, c_color_two) 

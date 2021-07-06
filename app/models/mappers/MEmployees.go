@@ -379,6 +379,24 @@ func (m *MEmployee) Delete(edbt *EmployeeDBType) (err error) {
 		return
 	}
 
+	// запрос на удаление пользователя записи из таблицы t_users при удалении связанного с ней сотрудника
+	query = `
+		DELETE FROM taskmaster.t_users
+		WHERE fk_employee = $1;
+	`
+
+	// выполнение запроса
+	_, err = m.db.Exec(query, edbt.Pk_id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = nil
+			return
+		}
+
+		revel.AppLog.Errorf("MEmployee.Delete : m.db.Exec t_users, %s\n", err)
+		return
+	}
+
 	// запрос
 	query = `
 		DELETE FROM "taskmaster".t_employees

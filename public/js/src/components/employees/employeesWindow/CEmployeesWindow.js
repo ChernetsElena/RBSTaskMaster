@@ -1,19 +1,22 @@
 import EmployeesWindowView from './EmployeesWindowView.js'
 import employeeModel from '../../../models/employeeModel.js'
 import positionModel from '../../../models/positionModel.js'
+import authModel from '../../../models/authModel.js'
 
 
 export class EmployeesWindow {
     constructor(){
         this.view
         this.type
-        this.onChang
+        this.onChange
+        this.onDeleteAuthEmployee
         this.positions
+        this.currentEmployeeId
     }
 
-    init(onChange) {
+    init(onChange, onDeleteAuthEmployee) {
         this.onChange = onChange
-
+        this.onDeleteAuthEmployee = onDeleteAuthEmployee
         this.positions = []
     }
 
@@ -92,18 +95,30 @@ export class EmployeesWindow {
                     }
                     
                 case EMPLOYEE_WINDOW_TYPE.delete:
-                    if (this.view.form.validate()) {
-                        employeeModel.deleteEmployee(this.fetch()).then(() => {
-                            this.onChange()
-                            this.clearForm();
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
+                    let deleteEmployee = this.fetch()
+                    
+                    authModel.getCurrentEmployee().then((employee) => {
+                        if (deleteEmployee.ID == employee.ID) {
+                            webix.confirm({text:"При удалении авторизированного сотрудника он будет перенаправлен на страницу авторизации. Вы уверены, что хотите удалить авторизованного сотрудника?"}).then((result) => {
+                                if (result == true) {
+                                    employeeModel.deleteEmployee(deleteEmployee).then(() => {
+                                        this.onChange()
+                                        this.clearForm();
+                                        this.hide()
+                                        this.onDeleteAuthEmployee()
+                                    })
+                                }
+                            })
+                        }
+                        else {
+                            employeeModel.deleteEmployee(deleteEmployee).then(() => {
+                                this.onChange()
+                                this.clearForm();
+                                this.hide()
+                            })
+                        }
+                    })
+                    break;
             }
         })
     }

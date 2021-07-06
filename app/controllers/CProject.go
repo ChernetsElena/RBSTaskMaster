@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"io/ioutil"
+	"taskmaster/app/helpers"
 	"taskmaster/app/models/entities"
 	"taskmaster/app/models/providers/project_provider"
 
@@ -17,10 +18,33 @@ type CProject struct {
 
 // Init интерцептор контроллера CProject
 func (c *CProject) Init() revel.Result {
+	var (
+		cache helpers.ICache // экземпляр кэша
+		err   error          // ошибка в ходе выполнения функции
+	)
+
+	// инициализация кэша
+	cache, err = helpers.GetCache()
+	if err != nil {
+		revel.AppLog.Errorf("CBook.Init : helpers.GetCache, %s\n", err)
+		return c.RenderJSON(Failed(err.Error()))
+	}
+
+	// получение токена клиента
+	token, err := helpers.GetToken(c.Controller)
+	if err != nil {
+		revel.AppLog.Errorf("CAuth.Check : helpers.GetToken, %s\n", err)
+		return c.Redirect((*CError).Unauthorized)
+	}
+
+	// проверка токена
+	if isExist := cache.TokenIsActual(token); !isExist {
+		return c.Redirect((*CError).Unauthorized)
+	}
 
 	// инициализация провайдера
 	c.provider = new(project_provider.PProject)
-	err := c.provider.Init()
+	err = c.provider.Init()
 	if err != nil {
 		revel.AppLog.Errorf("CProject.Init : c.provider.Init, %s\n", err)
 		return c.RenderJSON(Failed(err.Error()))

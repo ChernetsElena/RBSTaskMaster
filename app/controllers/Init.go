@@ -9,4 +9,5 @@ func init() {
 	revel.InterceptMethod((*CTask).Init, revel.BEFORE)
 	revel.InterceptMethod((*CStatus).Init, revel.BEFORE)
 	revel.InterceptMethod((*CUrgently).Init, revel.BEFORE)
+	revel.InterceptMethod((*CAuth).Init, revel.BEFORE)
 }

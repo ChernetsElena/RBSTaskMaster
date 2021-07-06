@@ -110,6 +110,46 @@ func (_ tApp) Index(
 }
 
 
+type tCAuth struct {}
+var CAuth tCAuth
+
+
+func (_ tCAuth) Init(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("CAuth.Init", args).URL
+}
+
+func (_ tCAuth) Login(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("CAuth.Login", args).URL
+}
+
+func (_ tCAuth) Logout(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("CAuth.Logout", args).URL
+}
+
+func (_ tCAuth) Check(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("CAuth.Check", args).URL
+}
+
+func (_ tCAuth) GetCurrentEmployee(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("CAuth.GetCurrentEmployee", args).URL
+}
+
+
 type tCEmployee struct {}
 var CEmployee tCEmployee
 
@@ -156,6 +196,37 @@ func (_ tCEmployee) Delete(
 	args := make(map[string]string)
 	
 	return revel.MainRouter.Reverse("CEmployee.Delete", args).URL
+}
+
+
+type tCError struct {}
+var CError tCError
+
+
+func (_ tCError) Unauthorized(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("CError.Unauthorized", args).URL
+}
+
+
+type tCIndex struct {}
+var CIndex tCIndex
+
+
+func (_ tCIndex) Init(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("CIndex.Init", args).URL
+}
+
+func (_ tCIndex) Index(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("CIndex.Index", args).URL
 }
 
 
