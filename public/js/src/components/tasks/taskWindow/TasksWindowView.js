@@ -6,18 +6,25 @@ export default function TasksWindowView(employees, task_status, task_urgently){
     return {
         view:"window",
         id:"taskWindow",
+        position: "center",
+        modal: true,
         move: true,
         head: {cols: [
             {
                 view: 'template',
                 id: 'taskWindowLabel',
-                css: 'webix_template',
                 template: headText,
                 borderless: true,
                 type:"header",
-                width: 300,
             },
-            {width: 580},
+            {},
+            {
+                view: "button",
+                id: "taskWindowBackButton",
+                type: "icon",
+                icon: "wxi-eye",
+                width: 50,
+            },
             {
                 view: "button",
                 id: "taskWindowDeleteButton",
@@ -34,10 +41,6 @@ export default function TasksWindowView(employees, task_status, task_urgently){
                 width: 50,
             }
         ]},
-        position: "center",
-        modal: true,
-        css: "popup_task_window",
-        width: 1000,
         body:{
             view:"form", 
             id:"formWindowTask",

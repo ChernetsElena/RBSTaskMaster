@@ -9,8 +9,14 @@ export default function MainWindowView() {
         position: 'center',
         css: 'main_window',
         body: {
+            
             rows: [
-                {},
+                
+                {
+                    view: "label",
+                    label: "Вход в TaskMaster",
+                    align: "center"
+                },
                 {
                     cols: [
                         {},

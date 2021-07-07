@@ -34,6 +34,6 @@ export class ProjectsButton {
                 this.names.push({id: `${employee.ID}`, value: `${employee.last_name} ${employee.name}`})
             })
             this.window.show(PROJECT_WINDOW_TYPE.new, this.names)
-        })       
+        })      
     }
 }

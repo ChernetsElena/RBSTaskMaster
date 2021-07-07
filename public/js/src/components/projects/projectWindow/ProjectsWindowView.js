@@ -145,9 +145,9 @@ export default function ProjectsWindowView(employees){
             },    
         ],
         rules:{
-            "name":webix.rules.isNotEmpty,
-            "description":webix.rules.isNotEmpty,
-            //"teamlead":webix.rules.isNotEmpty,
+            "name": webix.rules.isNotEmpty,
+            "description": webix.rules.isNotEmpty,
+            "teamleadID": webix.rules.isNotEmpty
         },
         css:{"border-color":"orange"},
     }

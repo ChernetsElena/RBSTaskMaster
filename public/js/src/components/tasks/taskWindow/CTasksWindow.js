@@ -2,10 +2,9 @@ import TaskWindowView from './TasksWindowView.js';
 import taskModel from '../../../models/taskModel.js';
 import employeeModel from '../../../models/employeeModel.js'
 import statusModel from '../../../models/statusModel.js'
-import {FormatTime} from '../../../../helpers/dateFormatter.js';
 
 export class TaskWindow {
-    constructor(){
+    constructor() {
         this.view
         this.type
         this.onChange
@@ -13,12 +12,13 @@ export class TaskWindow {
         this.names
         this.task_status = []
         this.selectTask
+        this.typeBeforeDelete
     }
 
     init(onChange) {
         this.onChange = onChange
     }
-    
+
     config(employees, status, urgently) {
         return TaskWindowView(employees, status, urgently)
     }
@@ -29,9 +29,10 @@ export class TaskWindow {
             window: $$('taskWindow'),
             windowLabel: $$('taskWindowLabel'),
             windowConfirmBtn: $$('taskWindowAddBtn'),
-            windowClearBtn:$$('taskWindowClearBtn'),
+            windowClearBtn: $$('taskWindowClearBtn'),
             closeBtn: $$('taskWindowCloseButton'),
             deleteBtn: $$('taskWindowDeleteButton'),
+            backBtn: $$('taskWindowBackButton'),
             form: $$('formWindowTask'),
             formfields: {
                 name: $$('formWindowTaskName'),
@@ -49,16 +50,12 @@ export class TaskWindow {
 
         statusModel.getStatuses().then((data) => {
             data.map((status) => {
-                this.task_status.push({id: `${status.ID}`, value: `${status.value}`})
+                this.task_status.push({ id: `${status.ID}`, value: `${status.value}` })
             })
         })
 
         this.view.windowClearBtn.attachEvent("onItemClick", () => {
-            this.view.formfields.name.setValue("")
-            this.view.formfields.description.setValue("")
-            this.view.formfields.performer.setValue("")
-            this.view.formfields.urgently.setValue(1)
-            this.view.formfields.status.setValue(1)
+            this.clearForm()
         })
 
         this.view.closeBtn.attachEvent("onItemClick", () => {
@@ -66,10 +63,26 @@ export class TaskWindow {
             this.view.window.hide()
         })
 
+        this.view.backBtn.attachEvent("onItemClick", () => {
+            this.selectTask = this.view.form.getCleanValues()
+            this.clearForm()
+            this.view.window.hide()
+            this.parse(this.selectTask)
+            this.show(this.typeBeforeDelete, this.names)
+        })
+
+        this.view.deleteBtn.attachEvent("onItemClick", () => {
+            this.typeBeforeDelete = this.type
+            this.selectTask = this.view.form.getCleanValues()
+            this.clearForm()
+            this.view.window.hide()
+            this.parse(this.selectTask)
+            this.show(TASK_WINDOW_TYPE.delete, this.names)
+        })
+
         this.view.formfields.performer.attachEvent("onChange", () => {
-            this.view.formfields.planTime.setValue(new Date(2000, 0, 1, 0, 0, 0, 0))
-            this.view.formfields.factTime.setValue(new Date(2000, 0, 1, 0, 0, 0, 0))
-            if (this.view.formfields.performer.getValue() == "") {
+            const perfomerID = this.view.formfields.performer.getValue()
+            if (perfomerID == "" || perfomerID == -1) {
                 this.view.formfields.status.setValue(1)
             }
             else {
@@ -79,12 +92,12 @@ export class TaskWindow {
 
         this.view.formfields.status.attachEvent("onChange", () => {
             let status = this.view.formfields.status.getValue()
-            let performer = this.view.formfields.performer.getValue()
-            
-            let isEmptyPerformer = (performer == 0) || (performer == "")
-            
+            console.log(status)
+            let performerID = this.view.formfields.performer.getValue()
+            let isEmptyPerformer = (performerID == 0) || (performerID == "") || (performerID == -1)
             if ((status == "2") && isEmptyPerformer) {
                 this.view.formfields.status.setValue(1)
+                webix.message('Выберите сотрудника', 'error')
             }
             if ((status == "1") && !isEmptyPerformer) {
                 this.view.formfields.status.setValue(2)
@@ -92,9 +105,8 @@ export class TaskWindow {
         })
 
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
-             switch (this.type) {
+            switch (this.type) {
                 case TASK_WINDOW_TYPE.create:
-                    console.log(this.fetch())
                     if (this.view.form.validate()) {
                         taskModel.createTask(this.fetch()).then(() => {
                             this.clearForm()
@@ -104,7 +116,6 @@ export class TaskWindow {
                         break;
                     }
                     else {
-                        //webix.message("Ваша форма не валидна")
                         break;
                     }
 
@@ -118,7 +129,6 @@ export class TaskWindow {
                         break;
                     }
                     else {
-                        //webix.message("Ваша форма не валидна")
                         break;
                     }
 
@@ -132,18 +142,9 @@ export class TaskWindow {
                         break;
                     }
                     else {
-                        //webix.message("Ваша форма не валидна")
                         break;
                     }
             }
-        })
-
-        this.view.deleteBtn.attachEvent("onItemClick", () => {
-            this.selectTask = this.view.form.getCleanValues()
-            this.clearForm()
-            this.view.window.hide()
-            this.parse(this.selectTask)
-            this.show(TASK_WINDOW_TYPE.delete, this.names)
         })
     }
 
@@ -185,9 +186,13 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Создать")
                 this.view.windowConfirmBtn.refresh()
+                this.view.backBtn.hide()
+                this.view.backBtn.refresh()
+                this.view.deleteBtn.hide()
+                this.view.deleteBtn.refresh()
                 this.view.windowClearBtn.show()
                 this.view.windowClearBtn.refresh()
-                
+
                 this.view.window.resize()
                 break;
 
@@ -213,9 +218,13 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.backBtn.hide()
+                this.view.backBtn.refresh()
+                this.view.deleteBtn.show()
+                this.view.deleteBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
-                
+
                 this.view.window.resize()
                 break;
 
@@ -244,9 +253,13 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.backBtn.hide()
+                this.view.backBtn.refresh()
+                this.view.deleteBtn.show()
+                this.view.deleteBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
-              
+
                 this.view.window.resize()
                 break;
 
@@ -275,9 +288,13 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.backBtn.hide()
+                this.view.backBtn.refresh()
+                this.view.deleteBtn.show()
+                this.view.deleteBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
-               
+
                 this.view.window.resize()
                 break;
 
@@ -306,9 +323,13 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.backBtn.hide()
+                this.view.backBtn.refresh()
+                this.view.deleteBtn.show()
+                this.view.deleteBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
-                
+
                 this.view.window.resize()
                 break;
 
@@ -335,9 +356,13 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Сохранить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.backBtn.hide()
+                this.view.backBtn.refresh()
+                this.view.deleteBtn.show()
+                this.view.deleteBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
-                
+
                 this.view.window.resize()
                 break;
 
@@ -365,12 +390,16 @@ export class TaskWindow {
                 this.view.formfields.factTime.disable()
                 this.view.windowConfirmBtn.hide()
                 this.view.windowConfirmBtn.refresh()
+                this.view.backBtn.hide()
+                this.view.backBtn.refresh()
+                this.view.deleteBtn.show()
+                this.view.deleteBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
-                
+
                 this.view.window.resize()
                 break;
-            
+
             case TASK_WINDOW_TYPE.delete:
                 this.view.windowLabel.define("template", "Удаление задачи")
                 this.view.windowLabel.refresh()
@@ -393,11 +422,15 @@ export class TaskWindow {
                 this.view.windowConfirmBtn.show()
                 this.view.windowConfirmBtn.define("value", "Удалить")
                 this.view.windowConfirmBtn.refresh()
+                this.view.backBtn.show()
+                this.view.backBtn.refresh()
+                this.view.deleteBtn.hide()
+                this.view.deleteBtn.refresh()
                 this.view.windowClearBtn.hide()
                 this.view.windowClearBtn.refresh()
                 this.view.window.resize()
                 break;
-            
+
             default:
                 console.error('Неизвестный тип отображения окна для работы с сущностью задачи');
                 return;
@@ -409,9 +442,13 @@ export class TaskWindow {
     refresh() {
         this.names = []
         employeeModel.getEmployees().then((data) => {
+
+            this.names.push({ id: -1, value: '' })
             data.map((employee) => {
-                this.names.push({id: `${employee.ID}`, value: `${employee.last_name} ${employee.name}`})
+                this.names.push({ id: `${employee.ID}`, value: `${employee.last_name} ${employee.name}` })
             })
+
+
             this.view.formfields.performer.define("options", this.names)
             this.view.formfields.performer.refresh()
         })
@@ -426,7 +463,24 @@ export class TaskWindow {
     }
 
     fetch() {
-        return this.view.form.getValues()
+        this.view.form.setDirty(true)
+        console.log(this.view.form.isDirty())
+        let data = this.view.form.getValues()
+        if (data.performerID === "-1") {
+            data.performerID = ''
+        }
+        if (this.type == TASK_WINDOW_TYPE.coordination) {
+            let clean = this.view.form.getCleanValues().performerID
+            let dirty = this.view.form.getDirtyValues()
+            if (dirty.hasOwnProperty('performerID')) {
+                if (clean != dirty.perfomerID) {
+                    data.plan_time = new Date(2000, 0, 1, 0, 0, 0, 0)
+                    data.fact_time = new Date(2000, 0, 1, 0, 0, 0, 0)
+                }
+            }
+
+        }
+        return data
     }
 
     setId(projectId) {
@@ -436,7 +490,9 @@ export class TaskWindow {
     clearForm() {
         this.view.form.clear()
         this.view.form.clearValidation()
+        this.view.formfields.performer.setValue(-1)
         this.view.formfields.urgently.setValue(1)
+        this.view.formfields.status.setValue(1)
     }
 }
 

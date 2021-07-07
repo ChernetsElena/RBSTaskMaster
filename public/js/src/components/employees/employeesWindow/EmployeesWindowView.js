@@ -128,6 +128,7 @@ export default function EmployeesWindowView(positions){
             "last_name":webix.rules.isNotEmpty,
             "name":webix.rules.isNotEmpty,
             "email":webix.rules.isEmail,
+            "position": webix.rules.isNotEmpty,
             "birth":webix.rules.isNotEmpty,
             "birth": function(value){ 
                 let ageDate= new Date(new Date() - value)

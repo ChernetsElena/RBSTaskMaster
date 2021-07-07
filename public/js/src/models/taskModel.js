@@ -31,7 +31,6 @@ class TaskModel extends Model {
 
         dataWindow.plan_time = FormatTime(dataWindow.plan_time)
         dataWindow.fact_time = FormatTime(dataWindow.fact_time)
-        console.log(dataWindow, 'updateTask')
         return this.post('/task/update', dataWindow)
     }
 

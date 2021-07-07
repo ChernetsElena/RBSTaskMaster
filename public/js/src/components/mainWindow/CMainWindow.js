@@ -45,6 +45,9 @@ export class CMainWindow {
                     this.switch()
                     this.onLogin()
                 }
+                else {
+                    webix.message('Неверный логин или пароль', 'error')
+                }
             })
         })
     }

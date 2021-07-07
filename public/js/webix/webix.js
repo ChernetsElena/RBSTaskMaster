@@ -29555,7 +29555,7 @@
         name: name,
         format: {
           parse: function (a) {
-            if (a == 12 && name === "hours") a = "00";
+            if (a == 12 && name === "hours") a = "12";
             return a.length > 1 ? a.replace(/^0/, "") : a || 0;
           },
           edit: function (a) {

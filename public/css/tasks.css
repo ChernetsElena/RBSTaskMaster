@@ -4,6 +4,7 @@
 }
 
 .webix_invalid .webix_el_box input,
+.webix_invalid .webix_el_combo,
 .webix_invalid .webix_custom_radio,
 .webix_invalid .webix_el_box .webix_inp_static,
 .webix_invalid .webix_el_box select,
