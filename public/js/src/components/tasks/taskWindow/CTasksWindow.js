@@ -2,6 +2,7 @@ import TaskWindowView from './TasksWindowView.js';
 import taskModel from '../../../models/taskModel.js';
 import employeeModel from '../../../models/employeeModel.js'
 import statusModel from '../../../models/statusModel.js'
+import { TASK_STATUS } from '../CTasks.js';
 
 export class TaskWindow {
     constructor() {
@@ -83,24 +84,23 @@ export class TaskWindow {
         this.view.formfields.performer.attachEvent("onChange", () => {
             const perfomerID = this.view.formfields.performer.getValue()
             if (perfomerID == "" || perfomerID == -1) {
-                this.view.formfields.status.setValue(1)
+                this.view.formfields.status.setValue(TASK_STATUS.new)
             }
             else {
-                this.view.formfields.status.setValue(2)
+                this.view.formfields.status.setValue(TASK_STATUS.assigned)
             }
         })
 
         this.view.formfields.status.attachEvent("onChange", () => {
             let status = this.view.formfields.status.getValue()
-            console.log(status)
             let performerID = this.view.formfields.performer.getValue()
             let isEmptyPerformer = (performerID == 0) || (performerID == "") || (performerID == -1)
-            if ((status == "2") && isEmptyPerformer) {
-                this.view.formfields.status.setValue(1)
-                webix.message('Выберите сотрудника', 'error')
+            
+            if ((status == TASK_STATUS.assigned) && isEmptyPerformer) {
+                this.view.formfields.status.setValue(TASK_STATUS.new)
             }
-            if ((status == "1") && !isEmptyPerformer) {
-                this.view.formfields.status.setValue(2)
+            if ((status == TASK_STATUS.new) && !isEmptyPerformer) {
+                this.view.formfields.performer.setValue(-1)
             }
         })
 
@@ -162,273 +162,35 @@ export class TaskWindow {
     show(type) {
         switch (type) {
             case TASK_WINDOW_TYPE.create:
-                this.view.windowLabel.define("template", "Создание задачи")
-                this.view.windowLabel.refresh()
-                this.view.formfields.projectID.define("value", this.projectId)
-                this.view.formfields.projectID.refresh()
-                this.view.formfields.name.enable()
-                this.view.formfields.name.refresh()
-                this.view.formfields.description.define("readonly", false)
-                webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
-                webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
-                this.view.formfields.description.refresh()
-                this.view.formfields.performer.enable()
-                this.view.formfields.performer.refresh()
-                this.view.formfields.status.define("options", [this.task_status[0], this.task_status[1]])
-                this.view.formfields.status.disable()
-                this.view.formfields.status.refresh()
-                this.view.formfields.urgently.enable()
-                this.view.formfields.urgently.refresh()
-                this.view.formfields.planTimeLabel.hide()
-                this.view.formfields.planTime.hide()
-                this.view.formfields.factTimeLabel.hide()
-                this.view.formfields.factTime.hide()
-                this.view.windowConfirmBtn.show()
-                this.view.windowConfirmBtn.define("value", "Создать")
-                this.view.windowConfirmBtn.refresh()
-                this.view.backBtn.hide()
-                this.view.backBtn.refresh()
-                this.view.deleteBtn.hide()
-                this.view.deleteBtn.refresh()
-                this.view.windowClearBtn.show()
-                this.view.windowClearBtn.refresh()
-
-                this.view.window.resize()
+                this.createTask()
                 break;
 
             case TASK_WINDOW_TYPE.new:
-                this.view.windowLabel.define("template", "Новая задача")
-                this.view.windowLabel.refresh()
-                this.view.formfields.name.disable()
-                this.view.formfields.name.refresh()
-                this.view.formfields.description.define("readonly", true)
-                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
-                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
-                this.view.formfields.description.refresh()
-                this.view.formfields.performer.enable()
-                this.view.formfields.performer.refresh()
-                this.view.formfields.status.disable()
-                this.view.formfields.status.refresh()
-                this.view.formfields.urgently.disable()
-                this.view.formfields.urgently.refresh()
-                this.view.formfields.planTimeLabel.hide()
-                this.view.formfields.planTime.hide()
-                this.view.formfields.factTimeLabel.hide()
-                this.view.formfields.factTime.hide()
-                this.view.windowConfirmBtn.show()
-                this.view.windowConfirmBtn.define("value", "Сохранить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.backBtn.hide()
-                this.view.backBtn.refresh()
-                this.view.deleteBtn.show()
-                this.view.deleteBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-
-                this.view.window.resize()
+                this.newTask()
                 break;
 
             case TASK_WINDOW_TYPE.assigned:
-                this.view.windowLabel.define("template", "Назначенная задача")
-                this.view.windowLabel.refresh()
-                this.view.formfields.name.disable()
-                this.view.formfields.name.refresh()
-                this.view.formfields.description.define("readonly", true)
-                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
-                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
-                this.view.formfields.description.refresh()
-                this.view.formfields.performer.disable()
-                this.view.formfields.performer.refresh()
-                this.view.formfields.status.enable()
-                this.view.formfields.status.define("options", [this.task_status[1], this.task_status[2], this.task_status[4]])
-                this.view.formfields.status.refresh()
-                this.view.formfields.urgently.disable()
-                this.view.formfields.urgently.refresh()
-                this.view.formfields.planTimeLabel.show()
-                this.view.formfields.planTime.show()
-                this.view.formfields.planTime.enable()
-                this.view.formfields.factTimeLabel.show()
-                this.view.formfields.factTime.show()
-                this.view.formfields.factTime.disable()
-                this.view.windowConfirmBtn.show()
-                this.view.windowConfirmBtn.define("value", "Сохранить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.backBtn.hide()
-                this.view.backBtn.refresh()
-                this.view.deleteBtn.show()
-                this.view.deleteBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-
-                this.view.window.resize()
+                this.assignedTask()
                 break;
 
             case TASK_WINDOW_TYPE.inJob:
-                this.view.windowLabel.define("template", "Задача в работе")
-                this.view.windowLabel.refresh()
-                this.view.formfields.name.disable()
-                this.view.formfields.name.refresh()
-                this.view.formfields.description.define("readonly", true)
-                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
-                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
-                this.view.formfields.description.refresh()
-                this.view.formfields.performer.disable()
-                this.view.formfields.performer.refresh()
-                this.view.formfields.status.enable()
-                this.view.formfields.status.define("options", [this.task_status[2], this.task_status[3], this.task_status[4], this.task_status[5]])
-                this.view.formfields.status.refresh()
-                this.view.formfields.urgently.disable()
-                this.view.formfields.urgently.refresh()
-                this.view.formfields.planTimeLabel.show()
-                this.view.formfields.planTime.show()
-                this.view.formfields.planTime.disable()
-                this.view.formfields.factTimeLabel.show()
-                this.view.formfields.factTime.show()
-                this.view.formfields.factTime.enable()
-                this.view.windowConfirmBtn.show()
-                this.view.windowConfirmBtn.define("value", "Сохранить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.backBtn.hide()
-                this.view.backBtn.refresh()
-                this.view.deleteBtn.show()
-                this.view.deleteBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-
-                this.view.window.resize()
+                this.inJobTask()
                 break;
 
             case TASK_WINDOW_TYPE.pause:
-                this.view.windowLabel.define("template", "Пауза")
-                this.view.windowLabel.refresh()
-                this.view.formfields.name.disable()
-                this.view.formfields.name.refresh()
-                this.view.formfields.description.define("readonly", true)
-                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
-                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
-                this.view.formfields.description.refresh()
-                this.view.formfields.performer.disable()
-                this.view.formfields.performer.refresh()
-                this.view.formfields.status.enable()
-                this.view.formfields.status.define("options", [this.task_status[2], this.task_status[3], this.task_status[4], this.task_status[5]])
-                this.view.formfields.status.refresh()
-                this.view.formfields.urgently.disable()
-                this.view.formfields.urgently.refresh()
-                this.view.formfields.planTimeLabel.show()
-                this.view.formfields.planTime.show()
-                this.view.formfields.planTime.disable()
-                this.view.formfields.factTimeLabel.show()
-                this.view.formfields.factTime.show()
-                this.view.formfields.factTime.disable()
-                this.view.windowConfirmBtn.show()
-                this.view.windowConfirmBtn.define("value", "Сохранить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.backBtn.hide()
-                this.view.backBtn.refresh()
-                this.view.deleteBtn.show()
-                this.view.deleteBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-
-                this.view.window.resize()
+                this.pauseTask()
                 break;
 
             case TASK_WINDOW_TYPE.coordination:
-                this.view.windowLabel.define("template", "Задача на согласовании")
-                this.view.windowLabel.refresh()
-                this.view.formfields.name.enable()
-                this.view.formfields.name.refresh()
-                this.view.formfields.description.define("readonly", false)
-                webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
-                webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
-                this.view.formfields.description.refresh()
-                this.view.formfields.performer.enable()
-                this.view.formfields.performer.refresh()
-                this.view.formfields.status.enable()
-                this.view.formfields.status.define("options", [this.task_status[0], this.task_status[1], this.task_status[4]])
-                this.view.formfields.status.refresh()
-                this.view.formfields.urgently.enable()
-                this.view.formfields.urgently.refresh()
-                this.view.formfields.planTimeLabel.hide()
-                this.view.formfields.planTime.hide()
-                this.view.formfields.factTimeLabel.hide()
-                this.view.formfields.factTime.hide()
-                this.view.windowConfirmBtn.show()
-                this.view.windowConfirmBtn.define("value", "Сохранить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.backBtn.hide()
-                this.view.backBtn.refresh()
-                this.view.deleteBtn.show()
-                this.view.deleteBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-
-                this.view.window.resize()
+                this.coordinationTask()
                 break;
 
             case TASK_WINDOW_TYPE.done:
-                this.view.windowLabel.define("template", "Задача выполнена")
-                this.view.windowLabel.refresh()
-                this.view.formfields.name.disable()
-                this.view.formfields.name.refresh()
-                this.view.formfields.description.define("readonly", true)
-                webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
-                webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
-                this.view.formfields.description.refresh()
-                this.view.formfields.performer.disable()
-                this.view.formfields.performer.refresh()
-                this.view.formfields.status.disable()
-                this.view.formfields.status.define("options", this.task_status)
-                this.view.formfields.status.refresh()
-                this.view.formfields.urgently.disable()
-                this.view.formfields.urgently.refresh()
-                this.view.formfields.planTimeLabel.show()
-                this.view.formfields.planTime.show()
-                this.view.formfields.planTime.disable()
-                this.view.formfields.factTimeLabel.show()
-                this.view.formfields.factTime.show()
-                this.view.formfields.factTime.disable()
-                this.view.windowConfirmBtn.hide()
-                this.view.windowConfirmBtn.refresh()
-                this.view.backBtn.hide()
-                this.view.backBtn.refresh()
-                this.view.deleteBtn.show()
-                this.view.deleteBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-
-                this.view.window.resize()
+                this.doneTask()
                 break;
 
             case TASK_WINDOW_TYPE.delete:
-                this.view.windowLabel.define("template", "Удаление задачи")
-                this.view.windowLabel.refresh()
-                this.view.formfields.name.disable()
-                this.view.formfields.name.refresh()
-                this.view.formfields.description.define("readonly", true)
-                this.view.formfields.description.refresh()
-                this.view.formfields.performer.disable()
-                this.view.formfields.performer.refresh()
-                this.view.formfields.status.disable()
-                this.view.formfields.status.refresh()
-                this.view.formfields.urgently.disable()
-                this.view.formfields.urgently.refresh()
-                this.view.formfields.planTimeLabel.show()
-                this.view.formfields.planTime.show()
-                this.view.formfields.planTime.disable()
-                this.view.formfields.factTimeLabel.show()
-                this.view.formfields.factTime.show()
-                this.view.formfields.factTime.disable()
-                this.view.windowConfirmBtn.show()
-                this.view.windowConfirmBtn.define("value", "Удалить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.backBtn.show()
-                this.view.backBtn.refresh()
-                this.view.deleteBtn.hide()
-                this.view.deleteBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-                this.view.window.resize()
+                this.deleteTask()
                 break;
 
             default:
@@ -464,7 +226,6 @@ export class TaskWindow {
 
     fetch() {
         this.view.form.setDirty(true)
-        console.log(this.view.form.isDirty())
         let data = this.view.form.getValues()
         if (data.performerID === "-1") {
             data.performerID = ''
@@ -493,6 +254,274 @@ export class TaskWindow {
         this.view.formfields.performer.setValue(-1)
         this.view.formfields.urgently.setValue(1)
         this.view.formfields.status.setValue(1)
+        this.view.formfields.planTime.setValue("00:00")
+        this.view.formfields.factTime.setValue("00:00")
+    }
+
+    createTask() {
+        webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
+        webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
+        this.view.windowLabel.define("template", "Создание задачи")
+        this.view.windowLabel.refresh()
+        this.view.formfields.projectID.define("value", this.projectId)
+        this.view.formfields.projectID.refresh()
+        this.view.formfields.name.enable()
+        this.view.formfields.name.refresh()
+        this.view.formfields.description.define("readonly", false)
+        this.view.formfields.description.refresh()
+        this.view.formfields.performer.enable()
+        this.view.formfields.performer.refresh()
+        this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.new-1], this.task_status[TASK_STATUS.assigned-1]])
+        this.view.formfields.status.disable()
+        this.view.formfields.status.refresh()
+        this.view.formfields.urgently.enable()
+        this.view.formfields.urgently.refresh()
+        this.view.formfields.planTimeLabel.hide()
+        this.view.formfields.planTime.hide()
+        this.view.formfields.factTimeLabel.hide()
+        this.view.formfields.factTime.hide()
+        this.view.windowConfirmBtn.show()
+        this.view.windowConfirmBtn.define("value", "Создать")
+        this.view.windowConfirmBtn.refresh()
+        this.view.backBtn.hide()
+        this.view.backBtn.refresh()
+        this.view.deleteBtn.hide()
+        this.view.deleteBtn.refresh()
+        this.view.windowClearBtn.show()
+        this.view.windowClearBtn.refresh()
+        this.view.window.resize()
+    }
+
+    newTask() {
+        webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+        webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
+        this.view.windowLabel.define("template", "Новая задача")
+        this.view.windowLabel.refresh()
+        this.view.formfields.name.disable()
+        this.view.formfields.name.refresh()
+        this.view.formfields.description.define("readonly", true)
+        this.view.formfields.description.refresh()
+        this.view.formfields.performer.enable()
+        this.view.formfields.performer.refresh()
+        this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.new-1], this.task_status[TASK_STATUS.assigned-1]])
+        this.view.formfields.status.disable()
+        this.view.formfields.status.refresh()
+        this.view.formfields.urgently.disable()
+        this.view.formfields.urgently.refresh()
+        this.view.formfields.planTimeLabel.hide()
+        this.view.formfields.planTime.hide()
+        this.view.formfields.factTimeLabel.hide()
+        this.view.formfields.factTime.hide()
+        this.view.windowConfirmBtn.show()
+        this.view.windowConfirmBtn.define("value", "Сохранить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.backBtn.hide()
+        this.view.backBtn.refresh()
+        this.view.deleteBtn.show()
+        this.view.deleteBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.view.window.resize()
+    }
+
+    assignedTask(){
+        webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+        webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
+        this.view.windowLabel.define("template", "Назначенная задача")
+        this.view.windowLabel.refresh()
+        this.view.formfields.name.disable()
+        this.view.formfields.name.refresh()
+        this.view.formfields.description.define("readonly", true)
+        this.view.formfields.description.refresh()
+        this.view.formfields.performer.disable()
+        this.view.formfields.performer.refresh()
+        this.view.formfields.status.enable()
+        this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.assigned-1], this.task_status[TASK_STATUS.inJob-1], this.task_status[TASK_STATUS.coordination-1]])
+        this.view.formfields.status.refresh()
+        this.view.formfields.urgently.disable()
+        this.view.formfields.urgently.refresh()
+        this.view.formfields.planTimeLabel.show()
+        this.view.formfields.planTime.show()
+        this.view.formfields.planTime.enable()
+        this.view.formfields.factTimeLabel.show()
+        this.view.formfields.factTime.show()
+        this.view.formfields.factTime.disable()
+        this.view.windowConfirmBtn.show()
+        this.view.windowConfirmBtn.define("value", "Сохранить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.backBtn.hide()
+        this.view.backBtn.refresh()
+        this.view.deleteBtn.show()
+        this.view.deleteBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.view.window.resize()
+    }
+
+    inJobTask(){
+        webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+        webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
+        this.view.windowLabel.define("template", "Задача в работе")
+        this.view.windowLabel.refresh()
+        this.view.formfields.name.disable()
+        this.view.formfields.name.refresh()
+        this.view.formfields.description.define("readonly", true)
+        this.view.formfields.description.refresh()
+        this.view.formfields.performer.disable()
+        this.view.formfields.performer.refresh()
+        this.view.formfields.status.enable()
+        this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.inJob-1], this.task_status[TASK_STATUS.pause-1], this.task_status[TASK_STATUS.coordination-1], this.task_status[TASK_STATUS.done-1]])
+        this.view.formfields.status.refresh()
+        this.view.formfields.urgently.disable()
+        this.view.formfields.urgently.refresh()
+        this.view.formfields.planTimeLabel.show()
+        this.view.formfields.planTime.show()
+        this.view.formfields.planTime.disable()
+        this.view.formfields.factTimeLabel.show()
+        this.view.formfields.factTime.show()
+        this.view.formfields.factTime.enable()
+        this.view.windowConfirmBtn.show()
+        this.view.windowConfirmBtn.define("value", "Сохранить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.backBtn.hide()
+        this.view.backBtn.refresh()
+        this.view.deleteBtn.show()
+        this.view.deleteBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.view.window.resize()
+    }
+
+    pauseTask() {
+        webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+        webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
+        this.view.windowLabel.define("template", "Пауза")
+        this.view.windowLabel.refresh()
+        this.view.formfields.name.disable()
+        this.view.formfields.name.refresh()
+        this.view.formfields.description.define("readonly", true)
+        this.view.formfields.description.refresh()
+        this.view.formfields.performer.disable()
+        this.view.formfields.performer.refresh()
+        this.view.formfields.status.enable()
+        this.view.formfields.status.define("options",  [this.task_status[TASK_STATUS.inJob-1], this.task_status[TASK_STATUS.pause-1], this.task_status[TASK_STATUS.coordination-1], this.task_status[TASK_STATUS.done-1]])
+        this.view.formfields.status.refresh()
+        this.view.formfields.urgently.disable()
+        this.view.formfields.urgently.refresh()
+        this.view.formfields.planTimeLabel.show()
+        this.view.formfields.planTime.show()
+        this.view.formfields.planTime.disable()
+        this.view.formfields.factTimeLabel.show()
+        this.view.formfields.factTime.show()
+        this.view.formfields.factTime.disable()
+        this.view.windowConfirmBtn.show()
+        this.view.windowConfirmBtn.define("value", "Сохранить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.backBtn.hide()
+        this.view.backBtn.refresh()
+        this.view.deleteBtn.show()
+        this.view.deleteBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.view.window.resize()
+    }
+
+    coordinationTask(){
+        webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
+        webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
+        this.view.windowLabel.define("template", "Задача на согласовании")
+        this.view.windowLabel.refresh()
+        this.view.formfields.name.enable()
+        this.view.formfields.name.refresh()
+        this.view.formfields.description.define("readonly", false)
+        this.view.formfields.description.refresh()
+        this.view.formfields.performer.enable()
+        this.view.formfields.performer.refresh()
+        this.view.formfields.status.enable()
+        this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.new-1], this.task_status[TASK_STATUS.assigned-1], this.task_status[TASK_STATUS.coordination-1]])
+        this.view.formfields.status.refresh()
+        this.view.formfields.urgently.enable()
+        this.view.formfields.urgently.refresh()
+        this.view.formfields.planTimeLabel.hide()
+        this.view.formfields.planTime.hide()
+        this.view.formfields.factTimeLabel.hide()
+        this.view.formfields.factTime.hide()
+        this.view.windowConfirmBtn.show()
+        this.view.windowConfirmBtn.define("value", "Сохранить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.backBtn.hide()
+        this.view.backBtn.refresh()
+        this.view.deleteBtn.show()
+        this.view.deleteBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.view.window.resize()
+    }
+
+    doneTask() {
+        webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+        webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
+        this.view.windowLabel.define("template", "Задача выполнена")
+        this.view.windowLabel.refresh()
+        this.view.formfields.name.disable()
+        this.view.formfields.name.refresh()
+        this.view.formfields.description.define("readonly", true)
+        this.view.formfields.description.refresh()
+        this.view.formfields.performer.disable()
+        this.view.formfields.performer.refresh()
+        this.view.formfields.status.disable()
+        this.view.formfields.status.define("options", this.task_status)
+        this.view.formfields.status.refresh()
+        this.view.formfields.urgently.disable()
+        this.view.formfields.urgently.refresh()
+        this.view.formfields.planTimeLabel.show()
+        this.view.formfields.planTime.show()
+        this.view.formfields.planTime.disable()
+        this.view.formfields.factTimeLabel.show()
+        this.view.formfields.factTime.show()
+        this.view.formfields.factTime.disable()
+        this.view.windowConfirmBtn.hide()
+        this.view.windowConfirmBtn.refresh()
+        this.view.backBtn.hide()
+        this.view.backBtn.refresh()
+        this.view.deleteBtn.show()
+        this.view.deleteBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.view.window.resize()
+    }
+
+    deleteTask() {
+        webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
+        webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
+        this.view.windowLabel.define("template", "Удаление задачи")
+        this.view.windowLabel.refresh()
+        this.view.formfields.name.disable()
+        this.view.formfields.name.refresh()
+        this.view.formfields.description.define("readonly", true)
+        this.view.formfields.description.refresh()
+        this.view.formfields.performer.disable()
+        this.view.formfields.performer.refresh()
+        this.view.formfields.status.disable()
+        this.view.formfields.status.refresh()
+        this.view.formfields.urgently.disable()
+        this.view.formfields.urgently.refresh()
+        this.view.formfields.planTimeLabel.show()
+        this.view.formfields.planTime.show()
+        this.view.formfields.planTime.disable()
+        this.view.formfields.factTimeLabel.show()
+        this.view.formfields.factTime.show()
+        this.view.formfields.factTime.disable()
+        this.view.windowConfirmBtn.show()
+        this.view.windowConfirmBtn.define("value", "Удалить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.backBtn.show()
+        this.view.backBtn.refresh()
+        this.view.deleteBtn.hide()
+        this.view.deleteBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.view.window.resize()
     }
 }
 

@@ -5,13 +5,15 @@ export function FormatDate(date) {
 }
 
 export function FormatTime(date) {
-    if (date == undefined || date == "Invalid Date"){
+    if (date == undefined || date == "Invalid Date" || date == ""){
         date = '00:00:00'
     }
     else {
         date = date.toString()
-        date = date.substr(0, date.length-47)
-        date = date.substr(16, date.length)
+        let doublePoint = date.indexOf(':')
+        
+        date = date.substr(0, doublePoint + 6)
+        date = date.substr(doublePoint-2, date.length)  
     }
     return (date)
 }

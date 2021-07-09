@@ -21,14 +21,24 @@ export default function ProjectsWindowView(employees){
                     id: "projectWindowDeleteButton",
                     type: "icon",
                     icon: "wxi-trash",
+                    tooltip: "Удалить",
                     width: 50,
     
+                },
+                {
+                    view: "button",
+                    id: "projectWindowShowButton",
+                    type: "icon",
+                    icon: "wxi-eye",
+                    tooltip: "Просмотреть",
+                    width: 50,
                 },
                 {
                     view: "button",
                     id: "projectWindowUpdateButton",
                     type: "icon",
                     icon: "wxi-pencil",
+                    tooltip: "Редактировать",
                     width: 50,
     
                 },
@@ -37,6 +47,7 @@ export default function ProjectsWindowView(employees){
                     id: "projectWindowCloseButton",
                     type: "icon",
                     icon: "wxi-close",
+                    tooltip: "Закрыть",
                     width: 50,
     
                 }
@@ -145,7 +156,13 @@ export default function ProjectsWindowView(employees){
             },    
         ],
         rules:{
-            "name": webix.rules.isNotEmpty,
+            "name": function(value){
+                if (value.length >= 50) {
+                    webix.message("Длина названия не должна превышать 50 символов", "error")
+                    return false
+                }
+                return webix.rules.isNotEmpty(value)
+            },
             "description": webix.rules.isNotEmpty,
             "teamleadID": webix.rules.isNotEmpty
         },

@@ -16,6 +16,8 @@ export default function ProjectsView(){
                     view:"dataview",
                     id: "projectsDataview",
                     width:1400,
+                    minWidth:1400,
+                    maxWidth:1400,
                     borderless:false,
                     xCount: 3,
                     css: "movies",

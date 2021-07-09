@@ -127,7 +127,12 @@ export class Tasks {
                 selectTask.plan_time = StringToDate(selectTask.plan_time)
                 selectTask.fact_time = StringToDate(selectTask.fact_time)
                 this.window.parse(selectTask)
-                this.showWindow(TASK_WINDOW_TYPE.inJob);
+                if (selectTask.status == TASK_STATUS.inJob){
+                    this.showWindow(TASK_WINDOW_TYPE.inJob);
+                }
+                else {
+                    this.showWindow(TASK_WINDOW_TYPE.pause);
+                }
                 this.view.inJobList.unselectAll();
             })
         })
@@ -183,22 +188,22 @@ export class Tasks {
             let doneTasks = []
 
             tasksData.map((task) => {
-                if (task.status == 1) {
+                if (task.status == TASK_STATUS.new) {
                     newTasks.push(task)
                 } 
-                if (task.status == 2) {
+                if (task.status == TASK_STATUS.assigned) {
                     assignedTasks.push(task)
                 }
-                if (task.status == 3) {
+                if (task.status == TASK_STATUS.inJob) {
                     inJobTasks.push(task)
                 }
-                if (task.status == 4) {
+                if (task.status == TASK_STATUS.pause) {
                     inJobTasks.push(task)
                 }
-                if (task.status == 5) {
+                if (task.status == TASK_STATUS.coordination) {
                     coordinationTasks.push(task)
                 }
-                if (task.status == 6) {
+                if (task.status == TASK_STATUS.done) {
                     doneTasks.push(task)
                 }
             })
@@ -210,4 +215,13 @@ export class Tasks {
             this.view.doneList.parse(doneTasks)
         }
     }
+}
+
+export const TASK_STATUS = {
+    new: 1,
+    assigned: 2,
+    inJob:3,
+    pause: 4,
+    coordination: 5,
+    done: 6
 }

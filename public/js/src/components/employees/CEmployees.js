@@ -9,7 +9,6 @@ export class Employees {
         this.view
         this.window = new EmployeesWindow()
         this.employeesButton
-        this.FormatDate = FormatDate
         this.toolbar
     }
     
@@ -44,21 +43,14 @@ export class Employees {
         this.refreshView()
 
         this.view.employeesTable.attachEvent("onItemClick", (id) => {
-            
             let select = this.view.employeesTable.getItem(id)
-            
             employeeModel.getEmployeeById(select.ID).then((selectedEmployee) => {
-                
-                selectedEmployee.birth = this.FormatDate(selectedEmployee.birth)
-
+                selectedEmployee.birth = FormatDate(selectedEmployee.birth)
+                this.window.parse(selectedEmployee)
                 if (id.column == 'edit') {
-                    this.window.parse(selectedEmployee)
-                    console.log(selectedEmployee)
                     this.showWindow(EMPLOYEE_WINDOW_TYPE.update);
                 }
-                
                 if (id.column == 'trash') {
-                    this.window.parse(selectedEmployee)
                     this.showWindow(EMPLOYEE_WINDOW_TYPE.delete);
                 }
             })
@@ -72,7 +64,7 @@ export class Employees {
     refreshView() {
         employeeModel.getEmployees().then((data) => {
             data.map((employee) => {
-                employee.birth = this.FormatDate(employee.birth)
+                employee.birth = FormatDate(employee.birth)
             })
             this.view.employeesTable.clearAll()
             this.view.employeesTable.parse(data)   

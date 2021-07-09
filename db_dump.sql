@@ -103,7 +103,13 @@ VALUES (3, 2, 'Сидр', 'Сидоров','Сидорович', 's.sidorov@mail
 
 
 INSERT INTO taskmaster.t_users (pk_id, fk_employee, c_login, c_password) 
-VALUES (1, 31, 'admin', '\x21232f297a57a5a743894a0e4a801fc3');
+VALUES (1, 1, 'admin', '\x21232f297a57a5a743894a0e4a801fc3');
+
+INSERT INTO taskmaster.t_users (pk_id, fk_employee, c_login, c_password) 
+VALUES (2, 2, 'admin', '\x21232f297a57a5a743894a0e4a801fc3');
+
+INSERT INTO taskmaster.t_users (pk_id, fk_employee, c_login, c_password) 
+VALUES (3, 3, 'admin', '\x21232f297a57a5a743894a0e4a801fc3');
 
 
 INSERT INTO taskmaster.t_projects (pk_id, fk_teamlead, c_name, c_description, c_color_one, c_color_two) 
@@ -126,19 +132,19 @@ VALUES (6, 1, 'Название проекта 6', 'Описание проек�
 
 
 INSERT INTO taskmaster.t_tasks (pk_id, fk_performer, fk_project, fk_status, fk_urgently, c_name, c_description, c_plan_time, c_fact_time) 
-VALUES (1, null, 1, 1, 1, 'Название задачи 1', 'Описание задачи 1 Описание задачи 1 Описание задачи 1', null, null);
+VALUES (1, null, 1, 1, 1, 'Название задачи 1', 'Описание задачи 1 Описание задачи 1 Описание задачи 1', '00:00:00', '00:00:00');
 
 INSERT INTO taskmaster.t_tasks (pk_id, fk_performer, fk_project, fk_status, fk_urgently, c_name, c_description, c_plan_time, c_fact_time) 
-VALUES (2, 2, 1, 2, 3, 'Название задачи 2', 'Описание задачи 2 Описание задачи 2 Описание задачи 2', null, null);
+VALUES (2, 2, 1, 2, 3, 'Название задачи 2', 'Описание задачи 2 Описание задачи 2 Описание задачи 2', '00:00:00','00:00:00');
 
 INSERT INTO taskmaster.t_tasks (pk_id, fk_performer, fk_project, fk_status, fk_urgently, c_name, c_description, c_plan_time, c_fact_time) 
-VALUES (3, 3, 1, 3, 1, 'Название задачи 3', 'Описание задачи 3 Описание задачи 3 Описание задачи 3', '01:30:00', null);
+VALUES (3, 3, 1, 3, 1, 'Название задачи 3', 'Описание задачи 3 Описание задачи 3 Описание задачи 3', '01:30:00', '00:00:00');
 
 INSERT INTO taskmaster.t_tasks (pk_id, fk_performer, fk_project, fk_status, fk_urgently, c_name, c_description, c_plan_time, c_fact_time) 
-VALUES (4, 1, 1, 4, 2, 'Название задачи 4', 'Описание задачи 4 Описание задачи 4 Описание задачи 4', '01:30:00', null);
+VALUES (4, 1, 1, 4, 2, 'Название задачи 4', 'Описание задачи 4 Описание задачи 4 Описание задачи 4', '01:30:00', '00:00:00');
 
 INSERT INTO taskmaster.t_tasks (pk_id, fk_performer, fk_project, fk_status, fk_urgently, c_name, c_description, c_plan_time, c_fact_time) 
-VALUES (5, 2, 1, 5, 2, 'Название задачи 5', 'Описание задачи 5 Описание задачи 5 Описание задачи 5', null, null);
+VALUES (5, 2, 1, 5, 2, 'Название задачи 5', 'Описание задачи 5 Описание задачи 5 Описание задачи 5', '00:00:00', '00:00:00');
 
 INSERT INTO taskmaster.t_tasks (pk_id, fk_performer, fk_project, fk_status, fk_urgently, c_name, c_description, c_plan_time, c_fact_time) 
 VALUES (6, 3, 1, 6, 1, 'Название задачи 6', 'Описание задачи 6 Описание задачи 6 Описание задачи 6', '02:30:00', '02:00:00');

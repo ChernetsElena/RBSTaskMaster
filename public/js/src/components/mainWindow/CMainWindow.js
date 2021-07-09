@@ -77,11 +77,6 @@ export class CMainWindow {
     // функция валидации формы
     validate() {
         let isValid = false
-
-        // удаление пробелов в полях формы
-
-        // валидация webix
-
         return isValid
     }
 }

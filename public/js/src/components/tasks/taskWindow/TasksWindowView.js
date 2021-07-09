@@ -23,6 +23,7 @@ export default function TasksWindowView(employees, task_status, task_urgently){
                 id: "taskWindowBackButton",
                 type: "icon",
                 icon: "wxi-eye",
+                tooltip: "Просмотреть",
                 width: 50,
             },
             {
@@ -30,6 +31,7 @@ export default function TasksWindowView(employees, task_status, task_urgently){
                 id: "taskWindowDeleteButton",
                 type: "icon",
                 icon: "wxi-trash",
+                tooltip: "Удалить",
                 width: 50,
 
             },
@@ -38,6 +40,7 @@ export default function TasksWindowView(employees, task_status, task_urgently){
                 id: "taskWindowCloseButton",
                 type: "icon",
                 icon: "wxi-close",
+                tooltip: "Закрыть",
                 width: 50,
             }
         ]},
@@ -196,11 +199,13 @@ export default function TasksWindowView(employees, task_status, task_urgently){
         ],
         css:{"border-color":"orange"},
         rules:{
-            "name": webix.rules.isNotEmpty,
             $obj:function(obj){
-
                 if (!webix.rules.isNotEmpty(obj.name)) {
                     webix.message("Пожалуйста, введите название задачи", 'error')
+                    return false
+                }
+                if (obj.name.length >= 50) {
+                    webix.message("Длина названия не должна превышать 50 символов", "error")
                     return false
                 }
                 if ((obj.status == "3" || obj.status == "4") && FormatTime(obj.plan_time) == '00:00:00') {

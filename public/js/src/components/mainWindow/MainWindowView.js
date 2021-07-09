@@ -45,6 +45,7 @@ export default function MainWindowView() {
                                     view: 'button',
                                     id: 'mainWindowConfirmBtn',
                                     value: 'Войти',
+                                    hotkey: "enter"
                                 },
                             ]
                         },

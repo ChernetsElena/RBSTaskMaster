@@ -53,7 +53,6 @@ export default function EmployeesWindowView(positions){
                         labelWidth: 150,
                         align : 'center',
                         attributes: {required: true},
-                        //invalidMessage:"Пожалуйста, введите имя" 
                     },
                     {
                         view:"text", 
@@ -84,7 +83,6 @@ export default function EmployeesWindowView(positions){
                         labelWidth: 150,
                         align : 'center',
                         attributes: {required: true},
-                        //invalidMessage:"Некорректный адрес почты" 
                     },
                     {
                         view:"datepicker", 
@@ -95,7 +93,6 @@ export default function EmployeesWindowView(positions){
                         labelWidth: 150,
                         align : 'center',
                         attributes: {required: true},
-                        //invalidMessage:"Некорректная дата" 
                     },
                     {cols: [
                         {},

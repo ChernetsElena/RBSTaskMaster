@@ -3,7 +3,6 @@ import employeeModel from '../../../models/employeeModel.js'
 import positionModel from '../../../models/positionModel.js'
 import authModel from '../../../models/authModel.js'
 
-
 export class EmployeesWindow {
     constructor(){
         this.view
@@ -56,12 +55,7 @@ export class EmployeesWindow {
         })
 
         this.view.windowClearBtn.attachEvent("onItemClick", () => {
-            this.view.formfields.name.setValue("")
-            this.view.formfields.lastName.setValue("")
-            this.view.formfields.middleName.setValue("")
-            this.view.formfields.position.setValue("")
-            this.view.formfields.email.setValue("")
-            this.view.formfields.birth.setValue("")
+            this.clearForm()
         })
 
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
@@ -99,7 +93,7 @@ export class EmployeesWindow {
                     
                     authModel.getCurrentEmployee().then((employee) => {
                         if (deleteEmployee.ID == employee.ID) {
-                            webix.confirm({text:"При удалении авторизированного сотрудника он будет перенаправлен на страницу авторизации. Вы уверены, что хотите удалить авторизованного сотрудника?"}).then((result) => {
+                            webix.confirm({text:"При удалении авторизованного сотрудника он будет перенаправлен на страницу авторизации. Вы уверены, что хотите удалить авторизованного сотрудника?"}).then((result) => {
                                 if (result == true) {
                                     employeeModel.deleteEmployee(deleteEmployee).then(() => {
                                         this.onChange()
@@ -137,33 +131,15 @@ export class EmployeesWindow {
     show(type) {
         switch (type) {
             case EMPLOYEE_WINDOW_TYPE.new:
-                this.view.windowLabel.define("template", "Новый сотрудник")
-                this.view.windowLabel.refresh()
-                this.view.windowConfirmBtn.define("value", "Добавить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.windowClearBtn.show()
-                this.view.windowClearBtn.refresh()
-                this.enableForm()
+                this.newEmployee()
                 break;
             
             case EMPLOYEE_WINDOW_TYPE.update:
-                this.view.windowLabel.define("template", "Редактирование")
-                this.view.windowLabel.refresh()
-                this.view.windowConfirmBtn.define("value", "Сохранить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-                this.enableForm()
+                this.updateEmployee()
                 break;
             
             case EMPLOYEE_WINDOW_TYPE.delete:
-                this.view.windowLabel.define("template", "Удаление")
-                this.view.windowLabel.refresh()
-                this.view.windowConfirmBtn.define("value", "Удалить")
-                this.view.windowConfirmBtn.refresh()
-                this.view.windowClearBtn.hide()
-                this.view.windowClearBtn.refresh()
-                this.disableForm()
+                this.deleteEmployee()
                 break;
             
             default:
@@ -189,6 +165,12 @@ export class EmployeesWindow {
     clearForm() {
         this.view.form.clear()
         this.view.form.clearValidation()
+        this.view.formfields.name.setValue("")
+        this.view.formfields.lastName.setValue("")
+        this.view.formfields.middleName.setValue("")
+        this.view.formfields.position.setValue("")
+        this.view.formfields.email.setValue("")
+        this.view.formfields.birth.setValue("")
     }
 
     enableForm() {
@@ -217,6 +199,36 @@ export class EmployeesWindow {
         this.view.formfields.email.refresh()
         this.view.formfields.birth.disable()
         this.view.formfields.birth.refresh()
+    }
+
+    newEmployee(){
+        this.view.windowLabel.define("template", "Новый сотрудник")
+        this.view.windowLabel.refresh()
+        this.view.windowConfirmBtn.define("value", "Добавить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.windowClearBtn.show()
+        this.view.windowClearBtn.refresh()
+        this.enableForm()
+    }
+
+    updateEmployee(){
+        this.view.windowLabel.define("template", "Редактирование")
+        this.view.windowLabel.refresh()
+        this.view.windowConfirmBtn.define("value", "Сохранить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.enableForm()
+    }
+
+    deleteEmployee(){
+        this.view.windowLabel.define("template", "Удаление")
+        this.view.windowLabel.refresh()
+        this.view.windowConfirmBtn.define("value", "Удалить")
+        this.view.windowConfirmBtn.refresh()
+        this.view.windowClearBtn.hide()
+        this.view.windowClearBtn.refresh()
+        this.disableForm()
     }
 }
 
