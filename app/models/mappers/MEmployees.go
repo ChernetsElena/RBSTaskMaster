@@ -10,13 +10,13 @@ import (
 
 // EmployeeDBType тип сущности "сотрудник" бд
 type EmployeeDBType struct {
-	Pk_id        int64          // идентификатор
-	Fk_position  int64          // FK на должность
-	C_name       string         // имя
-	C_lastname   string         // фамилия
-	C_middlename sql.NullString // отчество
-	C_email      string         // почтовый адрес
-	C_birth      *time.Time     //день рождения
+	Pk_id        int64      // идентификатор
+	Fk_position  int64      // FK на должность
+	C_name       string     // имя
+	C_lastname   string     // фамилия
+	C_middlename *string    // отчество
+	C_email      string     // почтовый адрес
+	C_birth      *time.Time //день рождения
 }
 
 // ToType функция преобразования типа бд к типу сущности
@@ -26,7 +26,7 @@ func (dbt *EmployeeDBType) ToType() (e *entities.Employee, err error) {
 	e.ID = dbt.Pk_id
 	e.Name = dbt.C_name
 	e.LastName = dbt.C_lastname
-	e.MiddleName = dbt.C_middlename.String
+	e.MiddleName = dbt.C_middlename
 	e.Email = dbt.C_email
 	e.Birth = dbt.C_birth
 
@@ -41,7 +41,7 @@ func (_ *EmployeeDBType) FromType(e entities.Employee) (dbt *EmployeeDBType, err
 		Pk_id:        e.ID,
 		C_name:       e.Name,
 		C_lastname:   e.LastName,
-		C_middlename: sql.NullString{e.MiddleName, true},
+		C_middlename: e.MiddleName,
 		C_email:      e.Email,
 		C_birth:      e.Birth,
 	}

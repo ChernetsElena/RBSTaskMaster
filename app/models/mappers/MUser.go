@@ -24,17 +24,6 @@ func (dbt *UserDBType) ToType() (u *entities.User, err error) {
 	return
 }
 
-// FromType функция преобразования типа сущности к типу бд
-// допускается, что dbt is nil
-func (_ *UserDBType) FromType(u entities.User) (dbt *UserDBType, err error) {
-	dbt = &UserDBType{
-		Pk_id:   u.ID,
-		C_login: u.Login,
-	}
-
-	return
-}
-
 // MUser маппер пользователей
 type MUser struct {
 	db *sql.DB
@@ -43,43 +32,6 @@ type MUser struct {
 // Init
 func (m *MUser) Init(db *sql.DB) {
 	m.db = db
-}
-
-// Insert добавление пользователя
-func (m *MUser) Insert(u *UserDBType, password string) (id int64, err error) {
-	var (
-		query string   // строка запроса
-		row   *sql.Row // выборка данных
-	)
-
-	// запрос
-	query = `
-		INSERT INTO taskmaster.t_users(
-			c_login,
-			c_password
-		)
-		VALUES(
-			$1,
-			$2
-		);	
-	`
-
-	// выполнение запроса
-	row = m.db.QueryRow(query, u.Pk_id, password)
-
-	// считывание строки выборки
-	err = row.Scan(&id)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			err = nil
-			return
-		}
-
-		revel.AppLog.Errorf("MUser.Insert : row.Scan, %s\n", err)
-		return
-	}
-
-	return
 }
 
 // SelectUserByID получение пользователя по id

@@ -22,18 +22,6 @@ func (dbt *StatusDBType) ToType() (e *entities.Status, err error) {
 	return
 }
 
-// FromType функция преобразования типа сущности к типу бд
-// допускается, что dbt is nil
-func (_ *StatusDBType) FromType(e entities.Status) (dbt *StatusDBType, err error) {
-	dbt = &StatusDBType{
-
-		Pk_id:  e.ID,
-		C_name: e.Name,
-	}
-
-	return
-}
-
 // MProject маппер статусов
 type MStatus struct {
 	db *sql.DB

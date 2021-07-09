@@ -71,16 +71,3 @@ func (c *CPosition) GetAll() revel.Result {
 	// рендер положительного результата
 	return c.RenderJSON(Succes(positions))
 }
-
-// GetByID получение должности по id
-// func (c *CPosition) GetByID(id int64) revel.Result {
-// 	// получение сотрудника
-// 	position, err := c.provider.GetPositionById(id)
-// 	if err != nil {
-// 		revel.AppLog.Errorf("CPosition.GetByID : c.provider.GetPositionByID, %s\n", err)
-// 		return c.RenderJSON(Failed(err.Error()))
-// 	}
-
-// 	// рендер положительного результата
-// 	return c.RenderJSON(Succes(position))
-// }

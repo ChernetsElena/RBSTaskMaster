@@ -22,18 +22,6 @@ func (dbt *UrgentlyDBType) ToType() (e *entities.Urgently, err error) {
 	return
 }
 
-// FromType функция преобразования типа сущности к типу бд
-// допускается, что dbt is nil
-func (_ *UrgentlyDBType) FromType(e entities.Urgently) (dbt *UrgentlyDBType, err error) {
-	dbt = &UrgentlyDBType{
-
-		Pk_id:  e.ID,
-		C_name: e.Name,
-	}
-
-	return
-}
-
 // MUrgently маппер срочностей
 type MUrgently struct {
 	db *sql.DB

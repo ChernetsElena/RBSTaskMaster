@@ -2,7 +2,6 @@ package mappers
 
 import (
 	"database/sql"
-	"fmt"
 	"taskmaster/app/models/entities"
 
 	"github.com/revel/revel"
@@ -10,18 +9,18 @@ import (
 
 // TaskDBType тип сущности "задача" бд
 type TaskDBType struct {
-	Pk_id         int64          // идентификатор
-	Fk_performer  sql.NullInt64  // FK на исполнителя
-	Fk_project    int64          // FK на проект
-	Fk_status     int64          // FK на статус
-	Fk_urgently   int64          // FK на срочность
-	C_name        string         // название
-	C_description sql.NullString // описание
-	C_plan_time   string         // планируемое время выполнения
-	C_fact_time   string         // фактическое время выполнения
+	Pk_id         int64         // идентификатор
+	Fk_performer  sql.NullInt64 // FK на исполнителя
+	Fk_project    int64         // FK на проект
+	Fk_status     int64         // FK на статус
+	Fk_urgently   int64         // FK на срочность
+	C_name        string        // название
+	C_description *string       // описание
+	C_plan_time   string        // планируемое время выполнения
+	C_fact_time   string        // фактическое время выполнения
 }
 
-// ToType функция преобразования типа бд к типу сущности
+// // ToType функция преобразования типа бд к типу сущности
 func (dbt *TaskDBType) ToType() (e *entities.Task, err error) {
 	e = new(entities.Task)
 
@@ -31,7 +30,7 @@ func (dbt *TaskDBType) ToType() (e *entities.Task, err error) {
 	e.Status = dbt.Fk_status
 	e.Urgently = dbt.Fk_urgently
 	e.Name = dbt.C_name
-	e.Description = dbt.C_description.String
+	e.Description = dbt.C_description
 	e.PlanTime = dbt.C_plan_time
 	e.FactTime = dbt.C_fact_time
 
@@ -49,7 +48,7 @@ func (_ *TaskDBType) FromType(e entities.Task) (dbt *TaskDBType, err error) {
 		Fk_status:     e.Status,
 		Fk_urgently:   e.Urgently,
 		C_name:        e.Name,
-		C_description: sql.NullString{e.Description, true},
+		C_description: e.Description,
 		C_plan_time:   e.PlanTime,
 		C_fact_time:   e.FactTime,
 	}
@@ -194,7 +193,6 @@ func (m *MTask) Insert(edbt *TaskDBType) (id int64, err error) {
 	)
 
 	if edbt.Fk_performer.Int64 == 0 {
-		fmt.Printf("\n\nUBRA: %v\n\n", "YES")
 		// запрос
 		query = `
 		INSERT INTO taskmaster.t_tasks(

@@ -23,16 +23,6 @@ func (dbt *PositionDBType) ToType() (p *entities.Position, err error) {
 	return
 }
 
-// FromType функция преобразования типа бд из типа сущности
-func (_ *PositionDBType) FromType(p *entities.Position) (dbt *PositionDBType, err error) {
-	dbt = &PositionDBType{
-		Pk_id:  p.ID,
-		C_name: p.Name,
-	}
-
-	return
-}
-
 // MPosition маппер должностей
 type MPosition struct {
 	db *sql.DB
