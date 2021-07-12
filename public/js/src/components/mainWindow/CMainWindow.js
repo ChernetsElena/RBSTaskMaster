@@ -11,7 +11,7 @@ export class CMainWindow {
     }
 
     // метод инициализации компонента
-    init(onLogin, onLogout) {
+    init(onLogin) {
         this.onLogin = onLogin
     }
 

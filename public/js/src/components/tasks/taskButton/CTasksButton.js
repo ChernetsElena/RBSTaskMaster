@@ -6,7 +6,6 @@ export class TaskButton {
         this.view
         this.window
         this.showProjectsView
-        this.names
     }
 
     init( projectWindow, showProjectsViewCB ) {

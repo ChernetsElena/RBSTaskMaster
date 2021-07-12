@@ -15,8 +15,8 @@ export class ProjectsWindow {
         this.onChange = onChange
     }
 
-    config(employees) {
-        return ProjectsWindowView(employees)
+    config() {
+        return ProjectsWindowView()
     }
 
     attachEvents() {

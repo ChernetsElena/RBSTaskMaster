@@ -1,4 +1,4 @@
-export default function ProjectsWindowView(employees){
+export default function ProjectsWindowView(){
     let headText = 'Новый проект'
     
     return {
@@ -106,7 +106,7 @@ export default function ProjectsWindowView(employees){
                         width: 400,
                         labelWidth: 150,
                         align : 'center',
-                        options: employees
+                        options: []
                     },
                     {
                         view:"text", 

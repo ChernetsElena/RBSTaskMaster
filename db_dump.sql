@@ -106,10 +106,10 @@ INSERT INTO taskmaster.t_users (pk_id, fk_employee, c_login, c_password)
 VALUES (1, 1, 'admin', '\x21232f297a57a5a743894a0e4a801fc3');
 
 INSERT INTO taskmaster.t_users (pk_id, fk_employee, c_login, c_password) 
-VALUES (2, 2, 'admin', '\x21232f297a57a5a743894a0e4a801fc3');
+VALUES (2, 2, 'petr', '\x21232f297a57a5a743894a0e4a801fc3');
 
 INSERT INTO taskmaster.t_users (pk_id, fk_employee, c_login, c_password) 
-VALUES (3, 3, 'admin', '\x21232f297a57a5a743894a0e4a801fc3');
+VALUES (3, 3, 'sidr', '\x21232f297a57a5a743894a0e4a801fc3');
 
 
 INSERT INTO taskmaster.t_projects (pk_id, fk_teamlead, c_name, c_description, c_color_one, c_color_two) 

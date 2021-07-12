@@ -9,10 +9,7 @@ export class Project {
         this.view
         this.window = new ProjectsWindow()
         this.tasks
-        this.projects
         this.employees
-        this.employeesButton
-        this.tasksOfProject
         this.projectsButton
         this.names
         this.showTasksView
@@ -34,7 +31,6 @@ export class Project {
         this.projectsButton = projectsButton
         this.tasks = tasks
         this.employees = employees
-        this.employeesButton = employeesButton
         this.toolbar = toolbar
 
         this.tasks.init(tasksButton, showProjectsViewCB)
@@ -56,14 +52,12 @@ export class Project {
         this.window.init(
             () => { this.refreshView() }
         )
-        this.names = []
-        this.projects = []
 
         this.clickTimeout = null
     }
 
     config() {
-        webix.ui(this.window.config(this.names))
+        webix.ui(this.window.config())
         return ProjectsView()
     }
 
