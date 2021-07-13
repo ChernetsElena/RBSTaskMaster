@@ -28,8 +28,10 @@ type MUrgently struct {
 }
 
 // Init
-func (m *MUrgently) Init(db *sql.DB) {
-	m.db = db
+func InitUrgently(db *sql.DB) *MUrgently{
+	return &MUrgently{
+		db: db,
+	}
 }
 
 // SelectAll получение всех срочностей

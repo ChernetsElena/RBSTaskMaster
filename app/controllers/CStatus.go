@@ -23,14 +23,14 @@ func (c *CStatus) Init() revel.Result {
 	// инициализация кэша
 	cache, err = helpers.GetCache()
 	if err != nil {
-		revel.AppLog.Errorf("CBook.Init : helpers.GetCache, %s\n", err)
+		revel.AppLog.Errorf("CStatus.Init : helpers.GetCache, %s\n", err)
 		return c.RenderJSON(Failed(err.Error()))
 	}
 
 	// получение токена клиента
 	token, err := helpers.GetToken(c.Controller)
 	if err != nil {
-		revel.AppLog.Errorf("CAuth.Check : helpers.GetToken, %s\n", err)
+		revel.AppLog.Errorf("CStatus.Init : helpers.GetToken, %s\n", err)
 		return c.Redirect((*CError).Unauthorized)
 	}
 
@@ -43,7 +43,7 @@ func (c *CStatus) Init() revel.Result {
 	c.provider = new(status_provider.PStatus)
 	err = c.provider.Init()
 	if err != nil {
-		revel.AppLog.Errorf("PStatus.Init : c.provider.Init, %s\n", err)
+		revel.AppLog.Errorf("CStatus.Init : c.provider.Init, %s\n", err)
 		return c.RenderJSON(Failed(err.Error()))
 	}
 

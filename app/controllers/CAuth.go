@@ -102,7 +102,7 @@ func (c *CAuth) Logout() revel.Result {
 	// получение токена клиента
 	token, err := helpers.GetToken(c.Controller)
 	if err != nil {
-		revel.AppLog.Errorf("CAuth.Check : helpers.GetToken, %s\n", err)
+		revel.AppLog.Errorf("CAuth.Logout : helpers.GetToken, %s\n", err)
 		return c.RenderJSON(Failed(err.Error()))
 	}
 

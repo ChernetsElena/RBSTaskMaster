@@ -1,3 +1,4 @@
+// Task класс для представления сущности задачи
 export class Task {
     constructor(
         id,
@@ -25,7 +26,3 @@ export class Task {
         this.fact_time = fact_time
     }
 }
-
-// export let TASK_STATUS = {
-
-// }

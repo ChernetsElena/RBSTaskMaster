@@ -135,7 +135,7 @@ func (c *cache) Delete(t string) (err error) {
 	return
 }
 
-// Delete удаление данных кэша по токену
+// update обновление данных кэша по токену
 func (c *cache) update(t string) (err error) {
 	var (
 		ok bool

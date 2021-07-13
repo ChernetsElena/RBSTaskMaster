@@ -1,25 +1,29 @@
 import ProjectsWindowView from './ProjectsWindowView.js';
 import projectModel from '../../../models/projectModel.js'
 
+// компонент окна для работы с сущностью проекта
 export class ProjectsWindow {
     constructor(){
-        this.view
-        this.type
-        this.onChange
-        this.names
-        this.selectProject
-        this.typeBeforeDelete
+        this.view                       // объект для быстрого доступа к представлениям
+        this.type                       // тип текущего отображения окна
+        this.onChange                   // callback функция при CUD операциях над проектом
+        this.names                      // тимлиды
+        this.selectProject              // тукущий выбранный проект
     }
 
+    // метод инициализации компонента
     init(onChange) {
         this.onChange = onChange
     }
 
+    // метод получения webix конфигурации компонента
     config() {
         return ProjectsWindowView()
     }
 
+    // метод инициализации обработчиков событий компонента
     attachEvents() {
+        // инициализация используемых представлений
         this.view = {
             window: $$('projectWindow'),
             windowLabel: $$('projectWindowLabel'),
@@ -39,15 +43,18 @@ export class ProjectsWindow {
             }
         }
 
+        // обрабтка закрытия окна
         this.view.closeBtn.attachEvent("onItemClick", () => {
             this.clearForm();
             this.view.window.hide();
         });
 
+        // обрабтка очистки окна
         this.view.clearBtn.attachEvent("onItemClick", () => {
             this.clearForm();
         });
 
+        // обрабтка события нажатия на кнопку "просмотр"
         this.view.showBtn.attachEvent("onItemClick", () => {
             this.selectProject = this.view.form.getCleanValues()
             this.clearForm()
@@ -56,11 +63,13 @@ export class ProjectsWindow {
             this.show(PROJECT_WINDOW_TYPE.show, this.names)
         })
 
+        // обрабтка события нажатия на кнопку "редактировать"
         this.view.updateBtn.attachEvent("onItemClick", () => {
             this.view.window.hide()
             this.show(PROJECT_WINDOW_TYPE.update, this.names)
         })
 
+        // обрабтка события нажатия на кнопку "удаление"
         this.view.deleteBtn.attachEvent("onItemClick", () => {
             this.selectProject = this.view.form.getCleanValues()
             this.clearForm()
@@ -69,53 +78,43 @@ export class ProjectsWindow {
             this.show(PROJECT_WINDOW_TYPE.delete, this.names)
         })
 
+        // обработка события 'принять'
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
+            // при удалении не требуется валидировать данные формы
+            // валидация введенных данных по обязательным полям
+            if (this.type !== PROJECT_WINDOW_TYPE.delete && !this.view.form.validate()) {
+                webix.message("Ваша форма не валидна", 'error')
+                return;
+            }
             switch (this.type) {
                 case PROJECT_WINDOW_TYPE.new:
-                    if (this.view.form.validate()) {
-                        projectModel.createProject(this.fetch()).then(() => {
-                            this.onChange()
-                            this.clearForm();
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
+                    projectModel.createProject(this.fetch()).then(() => {
+                        this.onChange()
+                        this.clearForm();
+                        this.hide()
+                    })
+                    break;
                     
                 case PROJECT_WINDOW_TYPE.update:
-                    if (this.view.form.validate()) {
-                        projectModel.updateProject(this.fetch()).then(() => {
-                            this.onChange()
-                            this.clearForm();
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
+                    projectModel.updateProject(this.fetch()).then(() => {
+                        this.onChange()
+                        this.clearForm();
+                        this.hide()
+                    })
+                    break;
                     
                 case PROJECT_WINDOW_TYPE.delete:
-                    if (this.view.form.validate()) {
-                        projectModel.deleteProject(this.fetch()).then(() => {
-                            this.onChange()
-                            this.clearForm();
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
+                    projectModel.deleteProject(this.fetch()).then(() => {
+                        this.onChange()
+                        this.clearForm();
+                        this.hide()
+                    })
+                    break;
             }
         })
     }
 
+    // метод вызова модального окна
     switch(type) {
         switch (this.view.window.isVisible()) {
             case true:
@@ -127,6 +126,7 @@ export class ProjectsWindow {
         }
     }
 
+    // метод отображения окна
     show(type, employees) {
         this.names = employees
         switch (type) {
@@ -154,18 +154,22 @@ export class ProjectsWindow {
         this.view.window.show()
     }
 
+    // метод сокрытия окна
     hide(){
         this.view.window.hide()
     }
 
+    // метод размещения сущности в форме окна
     parse(values) {
         this.view.form.setValues(values)
     }
 
+    // метод получения сущности из формы окна
     fetch() {
         return this.view.form.getValues()
     }
 
+    // метод очистки формы окна
     clearForm() {
         this.view.form.clear()
         this.view.form.clearValidation()
@@ -173,6 +177,7 @@ export class ProjectsWindow {
         this.view.formfields.colorTwo.setValue("#ffacac")
     }
 
+    // функция изменения окна для создания проекта
     newProject(employees) {
         webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
@@ -201,6 +206,7 @@ export class ProjectsWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для редактирования проекта
     updateProject(employees){
         webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
@@ -230,6 +236,7 @@ export class ProjectsWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для просмотра проекта
     showProject(employees){
         webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
@@ -256,6 +263,7 @@ export class ProjectsWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для удаления проекта
     deleteProject(employees){
         webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");

@@ -1,4 +1,4 @@
-
+// возвращает webix конфигурацию рабочего пространства приложения
 export default function ApplicationView(
     Toolbar, 
     Project, 

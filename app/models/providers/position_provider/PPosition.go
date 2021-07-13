@@ -26,8 +26,7 @@ func (p *PPosition) Init() (err error) {
 	}
 
 	// инициализация маппера должностей
-	p.positionMapper = new(mappers.MPosition)
-	p.positionMapper.Init(db)
+	p.positionMapper =  mappers.InitPosition(db)
 
 	return
 }

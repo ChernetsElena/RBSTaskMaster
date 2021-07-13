@@ -1,3 +1,4 @@
+// возвращает webix конфигурации кнопки для работы с сущностью задачи
 export default function TaskButtonView(){
     return {
         rows:[

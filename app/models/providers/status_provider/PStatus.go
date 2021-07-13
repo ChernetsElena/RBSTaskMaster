@@ -26,8 +26,7 @@ func (p *PStatus) Init() (err error) {
 	}
 
 	// инициализация маппера статусов
-	p.statusMapper = new(mappers.MStatus)
-	p.statusMapper.Init(db)
+	p.statusMapper = mappers.InitStatus(db)
 
 	return
 }

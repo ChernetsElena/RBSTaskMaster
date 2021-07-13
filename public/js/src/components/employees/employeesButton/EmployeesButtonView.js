@@ -1,4 +1,5 @@
 
+// возвращает webix конфигурации кнопки для работы с сущностью сотрудника
 export default function EmployeesButtonView(){
     return {
         rows:[

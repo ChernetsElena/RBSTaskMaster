@@ -2,15 +2,16 @@ import ToolbarView from './ToolbarView.js';
 import authModel from '../../models/authModel.js';
 import employeeModel from '../../models/employeeModel.js';
 
-
+// класс компонента тулбара
 export class Toolbar {
     constructor(){
-        this.view
-        this.showEmployeeView
+        this.view                           // быстрый доступ к представлениям компонента
+        this.showEmployeeView               // callback функция для отображения сотрудников
         this.onLogout                       // callback функция при логауте пользователя
-        this.employeeID
+        this.employeeID                     // id сотрудника, соответствующего текущему пользователю
     }
 
+    // метод инициализации компонента
     init(showEmployeeViewCB, onLogout) {
         this.showEmployeeView = showEmployeeViewCB
         this.onLogout = onLogout
@@ -32,6 +33,7 @@ export class Toolbar {
             logoutBtn: $$('toolbarLogoutButton'),
         }
 
+        //переход ко вкладке с сотрудниками
         this.view.employeesBtn.attachEvent("onItemClick", () => {
             this.showEmployeeView()
         })

@@ -1,12 +1,12 @@
 import Model from '../../helpers/model.js';
 
-/// PositionModel объект для работы(CRUD) с данными
+// UrgentlyModel объект для работы(CRUD) с данными
 class UrgentlyModel extends Model {
     constructor() {
         super()
     }
 
-    // получение должностей
+    // получение срочности
     getUrgently() {
         return this.get('/urgently/all')
     }

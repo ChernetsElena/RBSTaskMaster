@@ -1,4 +1,4 @@
-
+// возвращает webix конфигурации тулбара
 export default function ToolbarView(){
     return {
         view: 'toolbar',
@@ -7,6 +7,7 @@ export default function ToolbarView(){
         height: 60,
         cols: [
             {width: 50},
+            // кнопка с фамилией именем сотрудника
             {
                 view: "button", 
                 id: "toolbarUserButton",
@@ -14,7 +15,8 @@ export default function ToolbarView(){
                 icon: "wxi-user",
                 label: "загрузка...",
                 height: 50,
-                autowidth:true
+                autowidth:true,
+                disabled:true
             },
             {width: 10},
             {

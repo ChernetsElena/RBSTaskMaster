@@ -1,5 +1,11 @@
-import {TASK_URGENTLY_COLOR} from '../../data/dataTasks.js'
+// цвета границ задач в зависимости от их срочности
+const TASK_URGENTLY_COLOR = [
+    { "id": 1, "value":'#aebaff' },
+    { "id": 2, "value":'orange' }, 
+    { "id": 3, "value":'#e23f0e' }
+]
 
+// возвращает webix конфигурации таба для работы с задачами
 export default function TasksView(TASK_STATUS){
     
     return {

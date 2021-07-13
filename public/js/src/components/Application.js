@@ -9,22 +9,24 @@ import { TaskButton } from "./tasks/taskButton/CTasksButton.js";
 import { CMainWindow } from './mainWindow/CMainWindow.js';
 import { checkAuth } from '../../helpers/checkAuth.js'
 
-
+// галвный компонент приложения
 export class Application {
     constructor() {
-        this.view
-        this.toolbar = new Toolbar()
-        this.projects = new Project()
-        this.projectsButton = new ProjectsButton()
-        this.employees = new Employees()
-        this.employeesButton = new EmployeesButton()
-        this.tasks = new Tasks()
-        this.tasksButton = new TaskButton()
-        this.mainWindow = new CMainWindow()     // окно входа в приложение
+        this.view                                       // быстрый доступ к объектам представлений
+        this.toolbar = new Toolbar()                    // экземпляр контроллера тулбара
+        this.projects = new Project()                   // экземпляр контроллера проетов
+        this.projectsButton = new ProjectsButton()      // экземпляр контроллера кнопки проектов
+        this.employees = new Employees()                // экземпляр контроллера сотрудников
+        this.employeesButton = new EmployeesButton()    // экземпляр контроллера кнопки сотрудников
+        this.tasks = new Tasks()                        // экземпляр контроллера задач
+        this.tasksButton = new TaskButton()             // экземпляр контроллера кнопки задач
+        this.mainWindow = new CMainWindow()             // окно входа в приложение
     }
 
+    // метод инициализации главного компонента
     init(){
 
+        // инициализация компонента вкладки проектов
         this.projects.init(
             this.projectsButton, 
             this.tasks,
@@ -37,22 +39,22 @@ export class Application {
                 $$('employeeRow').hide()
                 $$('tasksRow').hide()
                 $$('projectRow').show()
-            },
+            }, // функция отображает вкладку проектов
             () => {
                 $$('projectRow').hide()
                 $$('employeeRow').hide()
                 $$('tasksRow').hide()
                 $$('tasksRow').show()
-            },
+            }, // функция отображает вкладку задач
             () => {
                 $$('projectRow').hide()
                 $$('employeeRow').hide()
                 $$('tasksRow').hide()
                 $$('employeeRow').show()
-            },
-            () => { location.replace('/user/logout')}
+            }, // функция отображает вкладку сотрудников
+            () => { location.replace('/user/logout')} // onLogout
             )
-
+        // инициализация компонента окна входа в приложение
         this.mainWindow.init(
             () => { location.replace('/') }, // onLogin
         )

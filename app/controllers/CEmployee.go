@@ -14,6 +14,7 @@ import (
 type CEmployee struct {
 	*revel.Controller
 	provider *employee_provider.PEmployee
+	cache helpers.ICache
 }
 
 // Init интерцептор контроллера CEmployee
@@ -119,8 +120,25 @@ func (c *CEmployee) Update() revel.Result {
 	var (
 		employee *entities.Employee // экземпляр сущности для обновления
 		err      error              // ошибка в ходе выполнения функции
+		isAuthorizeEmployee bool	// переменная для проверки авторизованности обновляемого сотрудника
+		cache helpers.ICache 		// экземпляр кэша
 	)
 
+	// инициализация кэша
+	cache, err = helpers.GetCache()
+
+	// получение токена клиента
+	token, err := helpers.GetToken(c.Controller)
+	if err != nil {
+		revel.AppLog.Errorf("CEmployee.Update : helpers.GetToken, %s\n", err)
+		return c.Redirect((*CError).Unauthorized)
+	}
+	// получение токена сервера для пользователя
+	u, err := cache.Get(token)
+	if err != nil {
+		revel.AppLog.Errorf("CEmployee.Update : c.cache.Get, %s\n", err)
+		return c.RenderJSON(Failed(err.Error()))
+	}
 	// формирование сущности для обновления из post параметров
 	employee, err = c.fetchPostEmployee()
 	if err != nil {
@@ -128,6 +146,20 @@ func (c *CEmployee) Update() revel.Result {
 		return c.RenderJSON(Failed(err.Error()))
 	}
 
+	// проверка авторизованности обновляемого сотрудника
+	isAuthorizeEmployee = u.Employee.ID == employee.ID
+
+	// обновление данных кэша
+	if isAuthorizeEmployee == true {
+		u.Employee.Name = employee.Name
+		u.Employee.LastName = employee.LastName
+		err = cache.Set(token, u)
+		if err != nil {
+			revel.AppLog.Errorf("CEmployee.Update : c.cache.Set, %s\n", err)
+			return c.RenderJSON(Failed(err.Error()))
+		}
+	}
+	
 	// обновление сущности
 	employee, err = c.provider.UpdateEmployee(employee)
 	if err != nil {

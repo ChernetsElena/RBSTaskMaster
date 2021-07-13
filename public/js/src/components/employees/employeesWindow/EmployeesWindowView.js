@@ -1,6 +1,6 @@
-
+// возвращает webix конфигурации окна для работы с сущностью сотрудника
 export default function EmployeesWindowView(positions){
-    let headText = 'Добавление сотрудника'
+    let headText = 'Добавление сотрудника' // текст заголовка модального окна
 
     return {
         view:"window",
@@ -42,7 +42,6 @@ export default function EmployeesWindowView(positions){
                         labelWidth: 150,
                         align : 'center',
                         attributes: {required: true},
-                        //invalidMessage:"Пожалуйста, введите фамилию" 
                     },
                     {
                         view:"text", 
@@ -127,6 +126,7 @@ export default function EmployeesWindowView(positions){
             "email":webix.rules.isEmail,
             "position": webix.rules.isNotEmpty,
             "birth":webix.rules.isNotEmpty,
+            // проверка возраста сотрудника (должно быть юолбше 14 лет) 
             "birth": function(value){ 
                 let ageDate= new Date(new Date() - value)
                 let treashold = new Date(1984, 0, 1)

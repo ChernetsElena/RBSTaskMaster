@@ -26,8 +26,7 @@ func (p *PUrgently) Init() (err error) {
 	}
 
 	// инициализация маппера срочности
-	p.urgentlyMapper = new(mappers.MUrgently)
-	p.urgentlyMapper.Init(db)
+	p.urgentlyMapper = mappers.InitUrgently(db)
 
 	return
 }

@@ -1,3 +1,4 @@
+// Project класс для представления сущности проекта
 export class Project {
     constructor(
         id,

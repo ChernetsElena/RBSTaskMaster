@@ -23,14 +23,14 @@ func (c *CUrgently) Init() revel.Result {
 	// инициализация кэша
 	cache, err = helpers.GetCache()
 	if err != nil {
-		revel.AppLog.Errorf("CBook.Init : helpers.GetCache, %s\n", err)
+		revel.AppLog.Errorf("CUrgently.Init : helpers.GetCache, %s\n", err)
 		return c.RenderJSON(Failed(err.Error()))
 	}
 
 	// получение токена клиента
 	token, err := helpers.GetToken(c.Controller)
 	if err != nil {
-		revel.AppLog.Errorf("CAuth.Check : helpers.GetToken, %s\n", err)
+		revel.AppLog.Errorf("CUrgently.Init : helpers.GetToken, %s\n", err)
 		return c.Redirect((*CError).Unauthorized)
 	}
 
@@ -43,7 +43,7 @@ func (c *CUrgently) Init() revel.Result {
 	c.provider = new(urgently_provider.PUrgently)
 	err = c.provider.Init()
 	if err != nil {
-		revel.AppLog.Errorf("PUrgently.Init : c.provider.Init, %s\n", err)
+		revel.AppLog.Errorf("CUrgently.Init : c.provider.Init, %s\n", err)
 		return c.RenderJSON(Failed(err.Error()))
 	}
 

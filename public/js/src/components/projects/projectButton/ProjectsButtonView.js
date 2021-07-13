@@ -1,3 +1,4 @@
+// возвращает webix конфигурации кнопки для работы с сущностью проекта
 export default function ProjectsButtonView(){
     return {
         rows:[

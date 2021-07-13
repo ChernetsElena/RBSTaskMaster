@@ -1,5 +1,6 @@
 import {FormatTime} from '../../../../helpers/dateFormatter.js';
 
+// возвращает webix конфигурации окна для работы с сущностью задачи
 export default function TasksWindowView(employees, task_status, task_urgently){
     let headText = 'Новая задача' 
 
@@ -208,10 +209,12 @@ export default function TasksWindowView(employees, task_status, task_urgently){
                     webix.message("Длина названия не должна превышать 50 символов", "error")
                     return false
                 }
+                // проверка на пустое планируемое время при назначении задаче статусов "в работе" и "пауза"
                 if ((obj.status == "3" || obj.status == "4") && FormatTime(obj.plan_time) == '00:00:00') {
                     webix.message("Пожалуйста, введите планируемое время", 'error')
                     return false
                 }
+                // проверка на пустое фактическое время при назначении задаче статуса "выполнена"
                 if (obj.status == "6" && FormatTime(obj.fact_time) == '00:00:00') {
                     webix.message("Пожалуйста, введите фактическое время", 'error')
                     return false

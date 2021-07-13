@@ -40,3 +40,7 @@
     border: 1px solid red;
     text-shadow: none;
 }
+
+.webix_view.webix_control .webix_disabled_box button {
+    color:  #4EB1D2;
+}

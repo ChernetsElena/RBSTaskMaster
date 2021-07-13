@@ -1,3 +1,4 @@
+// возвращает webix конфигурации окна для работы с сущностью проекта
 export default function ProjectsWindowView(){
     let headText = 'Новый проект'
     

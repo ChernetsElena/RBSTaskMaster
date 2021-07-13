@@ -30,8 +30,7 @@ func (p *PEmployee) Init() (err error) {
 	p.employeeMapper = mappers.InitEmployee(db)
 
 	// инициализация маппера должностей
-	p.positionsMapper = new(mappers.MPosition)
-	p.positionsMapper.Init(db)
+	p.positionsMapper =  mappers.InitPosition(db)
 
 	return
 }

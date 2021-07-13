@@ -29,8 +29,10 @@ type MPosition struct {
 }
 
 // Init
-func (m *MPosition) Init(db *sql.DB) {
-	m.db = db
+func InitPosition(db *sql.DB) *MPosition {
+	return &MPosition{
+		db: db,
+	}
 }
 
 // SelectAll получение всех должностей

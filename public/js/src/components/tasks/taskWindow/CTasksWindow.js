@@ -4,26 +4,30 @@ import employeeModel from '../../../models/employeeModel.js'
 import statusModel from '../../../models/statusModel.js'
 import { TASK_STATUS } from '../CTasks.js';
 
+// компонент окна для работы с сущностью задачи
 export class TaskWindow {
     constructor() {
-        this.view
-        this.type
-        this.onChange
-        this.projectId
-        this.names
-        this.task_status = []
-        this.selectTask
-        this.typeBeforeDelete
+        this.view                   // объект для быстрого доступа к представлениям
+        this.type                   // тип текущего отображения окна
+        this.onChange               // callback функция при CUD операциях над задачей
+        this.projectId              // id текущего проекта
+        this.names                  // исполнители
+        this.task_status = []       // статусы задач
+        this.selectTask             // текущая задача
+        this.typeBeforeDelete       // тип окна до отображения окна с типом delete
     }
 
+    // метод инициализации компонента
     init(onChange) {
         this.onChange = onChange
     }
 
+    // метод получения webix конфигурации компонента
     config(employees, status, urgently) {
         return TaskWindowView(employees, status, urgently)
     }
 
+    // метод инициализации обработчиков событий компонента
     attachEvents() {
         // инициализация используемых представлений
         this.view = {
@@ -33,7 +37,7 @@ export class TaskWindow {
             windowClearBtn: $$('taskWindowClearBtn'),
             closeBtn: $$('taskWindowCloseButton'),
             deleteBtn: $$('taskWindowDeleteButton'),
-            backBtn: $$('taskWindowBackButton'),
+            showBtn: $$('taskWindowBackButton'),
             form: $$('formWindowTask'),
             formfields: {
                 name: $$('formWindowTaskName'),
@@ -49,22 +53,26 @@ export class TaskWindow {
             }
         }
 
+        // подгрузка статусов
         statusModel.getStatuses().then((data) => {
             data.map((status) => {
                 this.task_status.push({ id: `${status.ID}`, value: `${status.value}` })
             })
         })
 
+        // обрабтка очистки окна
         this.view.windowClearBtn.attachEvent("onItemClick", () => {
             this.clearForm()
         })
 
+        // обрабтка закрытия окна
         this.view.closeBtn.attachEvent("onItemClick", () => {
             this.clearForm()
             this.view.window.hide()
         })
 
-        this.view.backBtn.attachEvent("onItemClick", () => {
+        // обрабтка cобытия нажатия кнопки "просмотр"
+        this.view.showBtn.attachEvent("onItemClick", () => {
             this.selectTask = this.view.form.getCleanValues()
             this.clearForm()
             this.view.window.hide()
@@ -72,6 +80,7 @@ export class TaskWindow {
             this.show(this.typeBeforeDelete, this.names)
         })
 
+        // обрабтка cобытия нажатия кнопки "удаление"
         this.view.deleteBtn.attachEvent("onItemClick", () => {
             this.typeBeforeDelete = this.type
             this.selectTask = this.view.form.getCleanValues()
@@ -81,73 +90,71 @@ export class TaskWindow {
             this.show(TASK_WINDOW_TYPE.delete, this.names)
         })
 
+        // обрабтка cобытия изменения исполнителя
         this.view.formfields.performer.attachEvent("onChange", () => {
             const perfomerID = this.view.formfields.performer.getValue()
+            // если не выбран исполнитель, то статус принимает значение "новая"
             if (perfomerID == "" || perfomerID == -1) {
                 this.view.formfields.status.setValue(TASK_STATUS.new)
             }
+            // если исполнитель выбран, то статус принимает значение "назначена"
             else {
                 this.view.formfields.status.setValue(TASK_STATUS.assigned)
             }
         })
 
+        // обрабтка cобытия изменения статуса
         this.view.formfields.status.attachEvent("onChange", () => {
             let status = this.view.formfields.status.getValue()
             let performerID = this.view.formfields.performer.getValue()
             let isEmptyPerformer = (performerID == 0) || (performerID == "") || (performerID == -1)
             
+            // если не выбран исполнитель и пользователь выбирает статус "назначена", то статус принимает значение "новая"
             if ((status == TASK_STATUS.assigned) && isEmptyPerformer) {
                 this.view.formfields.status.setValue(TASK_STATUS.new)
             }
+            // если выбран исполнитель и пользователь выбирает статус "новая", то исполнитель принимает значение пустой строки
             if ((status == TASK_STATUS.new) && !isEmptyPerformer) {
                 this.view.formfields.performer.setValue(-1)
             }
         })
 
+        // обработка события 'принять'
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
+            // при удалении не требуется валидировать данные формы
+            // валидация введенных данных по обязательным полям
+            if (this.type !== TASK_WINDOW_TYPE.delete && !this.view.form.validate()) {
+                return;
+            }
             switch (this.type) {
                 case TASK_WINDOW_TYPE.create:
-                    if (this.view.form.validate()) {
-                        taskModel.createTask(this.fetch()).then(() => {
-                            this.clearForm()
-                            this.onChange()
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        break;
-                    }
-
+                    taskModel.createTask(this.fetch()).then(() => {
+                        this.clearForm()
+                        this.onChange()
+                        this.hide()
+                    })
+                    break;
+                   
                 case TASK_WINDOW_TYPE.delete:
-                    if (this.view.form.validate()) {
-                        taskModel.deleteTask(this.fetch()).then(() => {
-                            this.clearForm()
-                            this.onChange()
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        break;
-                    }
-
+                    taskModel.deleteTask(this.fetch()).then(() => {
+                        this.clearForm()
+                        this.onChange()
+                        this.hide()
+                    })
+                    break;
+                   
                 default:
-                    if (this.view.form.validate()) {
-                        taskModel.updateTask(this.fetch()).then(() => {
-                            this.clearForm()
-                            this.onChange()
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        break;
-                    }
+                    taskModel.updateTask(this.fetch()).then(() => {
+                        this.clearForm()
+                        this.onChange()
+                        this.hide()
+                    })
+                    break;
             }
         })
     }
 
+     // метод вызова модального окна
     switch(type) {
         switch (this.view.window.isVisible()) {
             case true:
@@ -159,6 +166,7 @@ export class TaskWindow {
         }
     }
 
+    // метод отображения окна
     show(type) {
         switch (type) {
             case TASK_WINDOW_TYPE.create:
@@ -216,20 +224,30 @@ export class TaskWindow {
         })
     }
 
+    // метод сокрытия окна
     hide() {
         this.view.window.hide()
     }
 
+    // метод размещения сущности в форме окна
     parse(values) {
         this.view.form.setValues(values)
     }
 
+    // метод получения сущности из формы окна
     fetch() {
+        // установка параметра, обозначающего изменение данных в форме
         this.view.form.setDirty(true)
+
         let data = this.view.form.getValues()
         if (data.performerID === "-1") {
-            data.performerID = ''
+            data.performerID =
+             ''
         }
+        // если текущий тип окна согласование и исполнитель задачи не изменен,
+        // планируемое и фактическое время выполнения задачи не изменяются.
+        // если исполнитель изменился, планируемое и фактическое время выполнения
+        // устанавливаются в 0
         if (this.type == TASK_WINDOW_TYPE.coordination) {
             let clean = this.view.form.getCleanValues().performerID
             let dirty = this.view.form.getDirtyValues()
@@ -244,10 +262,12 @@ export class TaskWindow {
         return data
     }
 
+    // установка id текущего проекта
     setId(projectId) {
         this.projectId = projectId
     }
 
+    // функция очистки формы
     clearForm() {
         this.view.form.clear()
         this.view.form.clearValidation()
@@ -258,6 +278,7 @@ export class TaskWindow {
         this.view.formfields.factTime.setValue("00:00")
     }
 
+    // функция изменения окна для создания задачи
     createTask() {
         webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
@@ -271,6 +292,7 @@ export class TaskWindow {
         this.view.formfields.description.refresh()
         this.view.formfields.performer.enable()
         this.view.formfields.performer.refresh()
+        // установка возможных статусов для данного типа окна
         this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.new-1], this.task_status[TASK_STATUS.assigned-1]])
         this.view.formfields.status.disable()
         this.view.formfields.status.refresh()
@@ -283,8 +305,8 @@ export class TaskWindow {
         this.view.windowConfirmBtn.show()
         this.view.windowConfirmBtn.define("value", "Создать")
         this.view.windowConfirmBtn.refresh()
-        this.view.backBtn.hide()
-        this.view.backBtn.refresh()
+        this.view.showBtn.hide()
+        this.view.showBtn.refresh()
         this.view.deleteBtn.hide()
         this.view.deleteBtn.refresh()
         this.view.windowClearBtn.show()
@@ -292,6 +314,7 @@ export class TaskWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для просмотра новой задачи
     newTask() {
         webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
@@ -303,6 +326,7 @@ export class TaskWindow {
         this.view.formfields.description.refresh()
         this.view.formfields.performer.enable()
         this.view.formfields.performer.refresh()
+        // установка возможных статусов для данного типа окна
         this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.new-1], this.task_status[TASK_STATUS.assigned-1]])
         this.view.formfields.status.disable()
         this.view.formfields.status.refresh()
@@ -315,8 +339,8 @@ export class TaskWindow {
         this.view.windowConfirmBtn.show()
         this.view.windowConfirmBtn.define("value", "Сохранить")
         this.view.windowConfirmBtn.refresh()
-        this.view.backBtn.hide()
-        this.view.backBtn.refresh()
+        this.view.showBtn.hide()
+        this.view.showBtn.refresh()
         this.view.deleteBtn.show()
         this.view.deleteBtn.refresh()
         this.view.windowClearBtn.hide()
@@ -324,6 +348,7 @@ export class TaskWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для просмотра назначенной задачи
     assignedTask(){
         webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
@@ -336,6 +361,7 @@ export class TaskWindow {
         this.view.formfields.performer.disable()
         this.view.formfields.performer.refresh()
         this.view.formfields.status.enable()
+        // установка возможных статусов для данного типа окна
         this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.assigned-1], this.task_status[TASK_STATUS.inJob-1], this.task_status[TASK_STATUS.coordination-1]])
         this.view.formfields.status.refresh()
         this.view.formfields.urgently.disable()
@@ -349,8 +375,8 @@ export class TaskWindow {
         this.view.windowConfirmBtn.show()
         this.view.windowConfirmBtn.define("value", "Сохранить")
         this.view.windowConfirmBtn.refresh()
-        this.view.backBtn.hide()
-        this.view.backBtn.refresh()
+        this.view.showBtn.hide()
+        this.view.showBtn.refresh()
         this.view.deleteBtn.show()
         this.view.deleteBtn.refresh()
         this.view.windowClearBtn.hide()
@@ -358,6 +384,7 @@ export class TaskWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для просмотра задачи в работе
     inJobTask(){
         webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
@@ -370,6 +397,7 @@ export class TaskWindow {
         this.view.formfields.performer.disable()
         this.view.formfields.performer.refresh()
         this.view.formfields.status.enable()
+        // установка возможных статусов для данного типа окна
         this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.inJob-1], this.task_status[TASK_STATUS.pause-1], this.task_status[TASK_STATUS.coordination-1], this.task_status[TASK_STATUS.done-1]])
         this.view.formfields.status.refresh()
         this.view.formfields.urgently.disable()
@@ -383,8 +411,8 @@ export class TaskWindow {
         this.view.windowConfirmBtn.show()
         this.view.windowConfirmBtn.define("value", "Сохранить")
         this.view.windowConfirmBtn.refresh()
-        this.view.backBtn.hide()
-        this.view.backBtn.refresh()
+        this.view.showBtn.hide()
+        this.view.showBtn.refresh()
         this.view.deleteBtn.show()
         this.view.deleteBtn.refresh()
         this.view.windowClearBtn.hide()
@@ -392,6 +420,7 @@ export class TaskWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для просмотра задачи в паузе
     pauseTask() {
         webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
@@ -404,6 +433,7 @@ export class TaskWindow {
         this.view.formfields.performer.disable()
         this.view.formfields.performer.refresh()
         this.view.formfields.status.enable()
+        // установка возможных статусов для данного типа окна
         this.view.formfields.status.define("options",  [this.task_status[TASK_STATUS.inJob-1], this.task_status[TASK_STATUS.pause-1], this.task_status[TASK_STATUS.coordination-1], this.task_status[TASK_STATUS.done-1]])
         this.view.formfields.status.refresh()
         this.view.formfields.urgently.disable()
@@ -417,8 +447,8 @@ export class TaskWindow {
         this.view.windowConfirmBtn.show()
         this.view.windowConfirmBtn.define("value", "Сохранить")
         this.view.windowConfirmBtn.refresh()
-        this.view.backBtn.hide()
-        this.view.backBtn.refresh()
+        this.view.showBtn.hide()
+        this.view.showBtn.refresh()
         this.view.deleteBtn.show()
         this.view.deleteBtn.refresh()
         this.view.windowClearBtn.hide()
@@ -426,6 +456,7 @@ export class TaskWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для просмотра задачи на согласовании
     coordinationTask(){
         webix.html.removeCss(this.view.formfields.description.getNode(), "disable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "enable_description");
@@ -438,6 +469,7 @@ export class TaskWindow {
         this.view.formfields.performer.enable()
         this.view.formfields.performer.refresh()
         this.view.formfields.status.enable()
+        // установка возможных статусов для данного типа окна
         this.view.formfields.status.define("options", [this.task_status[TASK_STATUS.new-1], this.task_status[TASK_STATUS.assigned-1], this.task_status[TASK_STATUS.coordination-1]])
         this.view.formfields.status.refresh()
         this.view.formfields.urgently.enable()
@@ -449,8 +481,8 @@ export class TaskWindow {
         this.view.windowConfirmBtn.show()
         this.view.windowConfirmBtn.define("value", "Сохранить")
         this.view.windowConfirmBtn.refresh()
-        this.view.backBtn.hide()
-        this.view.backBtn.refresh()
+        this.view.showBtn.hide()
+        this.view.showBtn.refresh()
         this.view.deleteBtn.show()
         this.view.deleteBtn.refresh()
         this.view.windowClearBtn.hide()
@@ -458,6 +490,8 @@ export class TaskWindow {
         this.view.window.resize()
     }
 
+
+    // функция изменения окна для просмотра выполненной задачи
     doneTask() {
         webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
@@ -470,6 +504,7 @@ export class TaskWindow {
         this.view.formfields.performer.disable()
         this.view.formfields.performer.refresh()
         this.view.formfields.status.disable()
+        // установка возможных статусов для данного типа окна
         this.view.formfields.status.define("options", this.task_status)
         this.view.formfields.status.refresh()
         this.view.formfields.urgently.disable()
@@ -482,8 +517,8 @@ export class TaskWindow {
         this.view.formfields.factTime.disable()
         this.view.windowConfirmBtn.hide()
         this.view.windowConfirmBtn.refresh()
-        this.view.backBtn.hide()
-        this.view.backBtn.refresh()
+        this.view.showBtn.hide()
+        this.view.showBtn.refresh()
         this.view.deleteBtn.show()
         this.view.deleteBtn.refresh()
         this.view.windowClearBtn.hide()
@@ -491,6 +526,7 @@ export class TaskWindow {
         this.view.window.resize()
     }
 
+    // функция изменения окна для удаления задачи
     deleteTask() {
         webix.html.removeCss(this.view.formfields.description.getNode(), "enable_description");
         webix.html.addCss(this.view.formfields.description.getNode(), "disable_description");
@@ -515,8 +551,8 @@ export class TaskWindow {
         this.view.windowConfirmBtn.show()
         this.view.windowConfirmBtn.define("value", "Удалить")
         this.view.windowConfirmBtn.refresh()
-        this.view.backBtn.show()
-        this.view.backBtn.refresh()
+        this.view.showBtn.show()
+        this.view.showBtn.refresh()
         this.view.deleteBtn.hide()
         this.view.deleteBtn.refresh()
         this.view.windowClearBtn.hide()

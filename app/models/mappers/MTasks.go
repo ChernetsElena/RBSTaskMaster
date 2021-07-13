@@ -62,8 +62,10 @@ type MTask struct {
 }
 
 // Init
-func (m *MTask) Init(db *sql.DB) {
-	m.db = db
+func InitTask(db *sql.DB) *MTask {
+	return &MTask{
+		db: db,
+	}
 }
 
 // SelectByProjectId получение задач по ID проекта

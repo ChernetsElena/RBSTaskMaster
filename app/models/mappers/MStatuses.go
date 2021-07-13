@@ -28,8 +28,10 @@ type MStatus struct {
 }
 
 // Init
-func (m *MStatus) Init(db *sql.DB) {
-	m.db = db
+func InitStatus(db *sql.DB) *MStatus{
+	return &MStatus{
+		db: db,
+	}
 }
 
 // SelectAll получение всех статусов

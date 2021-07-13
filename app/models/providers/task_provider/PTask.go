@@ -27,8 +27,7 @@ func (p *PTask) Init() (err error) {
 	}
 
 	// инициализация маппера задач
-	p.taskMapper = new(mappers.MTask)
-	p.taskMapper.Init(db)
+	p.taskMapper = mappers.InitTask(db)
 
 	p.employeeMapper = mappers.InitEmployee(db)
 	return

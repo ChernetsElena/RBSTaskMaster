@@ -1,3 +1,4 @@
+// Employee класс для представления сущности сотрудника
 export class Employee {
     constructor(
         id,

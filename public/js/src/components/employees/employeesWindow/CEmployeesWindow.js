@@ -3,27 +3,32 @@ import employeeModel from '../../../models/employeeModel.js'
 import positionModel from '../../../models/positionModel.js'
 import authModel from '../../../models/authModel.js'
 
+// компонент окна для работы с сущностью сотрудника
 export class EmployeesWindow {
     constructor(){
-        this.view
-        this.type
-        this.onChange
-        this.onDeleteAuthEmployee
-        this.positions
-        this.currentEmployeeId
+        this.view                           // объект для быстрого доступа к представлениям
+        this.type                           // тип текущего отображения окна
+        this.onChange                       // callback функция при CUD операциях над сотрудником
+        this.onDeleteAuthEmployee           // callback функция при удалении авторизованного сотрудника
+        this.positions                      // должности
+        this.currentEmployeeId              // id текущего пользователя
     }
 
+    // метод инициализации компонента
     init(onChange, onDeleteAuthEmployee) {
         this.onChange = onChange
         this.onDeleteAuthEmployee = onDeleteAuthEmployee
         this.positions = []
     }
 
+    // метод получения webix конфигурации компонента
     config() {
         return EmployeesWindowView()
     }
 
+    // метод инициализации обработчиков событий компонента
     attachEvents() {
+        // инициализация используемых представлений
         this.view = {
             window: $$('windowEmployee'),
             windowLabel: $$('employeeWindowLabel'),
@@ -41,6 +46,7 @@ export class EmployeesWindow {
             }
         }
 
+        // подгрузка должностей
         positionModel.getPositions().then((data) => {
             data.map((position) => {
                 this.positions.push({id: `${position.name}`, value: `${position.name}`})
@@ -49,52 +55,51 @@ export class EmployeesWindow {
             this.view.formfields.position.refresh()
         })
 
+        // обрабтка закрытия окна
         this.view.closeBtn.attachEvent("onItemClick", () => {
             this.clearForm()
             this.view.window.hide()
         })
 
+        // обрабтка очистки окна
         this.view.windowClearBtn.attachEvent("onItemClick", () => {
             this.clearForm()
         })
 
+        // обработка события 'принять'
         this.view.windowConfirmBtn.attachEvent("onItemClick", () => {
+            // при удалении не требуется валидировать данные формы
+            // валидация введенных данных по обязательным полям
+            if (this.type !== EMPLOYEE_WINDOW_TYPE.delete && !this.view.form.validate()) {
+                webix.message('Ваша форма не валидна', 'error')
+                return;
+            }
             switch (this.type) {
                 case EMPLOYEE_WINDOW_TYPE.new:
-                    if (this.view.form.validate()) {
-                        employeeModel.createEmployee(this.fetch()).then(() => {
-                            this.onChange()
-                            this.clearForm();
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
+                    employeeModel.createEmployee(this.fetch()).then(() => {
+                        this.onChange()
+                        this.clearForm();
+                        this.hide()
+                    })
+                    break;
                     
                 case EMPLOYEE_WINDOW_TYPE.update:
-                    if (this.view.form.validate()) {
-                        employeeModel.updateEmployee(this.fetch()).then(() => {
-                            this.onChange()
-                            this.clearForm();
-                            this.hide()
-                        })
-                        break;
-                    }
-                    else {
-                        webix.message("Ваша форма не валидна")
-                        break;
-                    }
+                    employeeModel.updateEmployee(this.fetch()).then(() => {
+                        this.onChange()
+                        this.clearForm();
+                        this.hide()
+                    })
+                    break;      
                     
                 case EMPLOYEE_WINDOW_TYPE.delete:
+                    // получение сотрудника
                     let deleteEmployee = this.fetch()
-                    
+                     // проверка авторизованности
                     authModel.getCurrentEmployee().then((employee) => {
                         if (deleteEmployee.ID == employee.ID) {
                             webix.confirm({text:"При удалении авторизованного сотрудника он будет перенаправлен на страницу авторизации. Вы уверены, что хотите удалить авторизованного сотрудника?"}).then((result) => {
                                 if (result == true) {
+                                    // удаление сотрудника
                                     employeeModel.deleteEmployee(deleteEmployee).then(() => {
                                         this.onChange()
                                         this.clearForm();
@@ -105,6 +110,7 @@ export class EmployeesWindow {
                             })
                         }
                         else {
+                            // удаление сотрудника
                             employeeModel.deleteEmployee(deleteEmployee).then(() => {
                                 this.onChange()
                                 this.clearForm();
@@ -117,6 +123,7 @@ export class EmployeesWindow {
         })
     }
 
+    // метод вызова модального окна
     switch(type) {
         switch (this.view.window.isVisible()) {
             case true:
@@ -128,6 +135,7 @@ export class EmployeesWindow {
         }
     }
 
+    // метод отображения окна
     show(type) {
         switch (type) {
             case EMPLOYEE_WINDOW_TYPE.new:
@@ -150,18 +158,22 @@ export class EmployeesWindow {
         this.view.window.show()
     }
 
+    // метод сокрытия окна
     hide(){
         this.view.window.hide()
     }
 
+    // метод размещения сущности в форме окна
     parse(values) {
         this.view.form.setValues(values)
     }
 
+    // метод получения сущности из формы окна
     fetch() {
         return this.view.form.getValues()
     }
 
+    // функция очистки формы
     clearForm() {
         this.view.form.clear()
         this.view.form.clearValidation()
@@ -173,6 +185,7 @@ export class EmployeesWindow {
         this.view.formfields.birth.setValue("")
     }
 
+    // функция приведения окна к виду, позволяющему редактирование
     enableForm() {
         this.view.formfields.name.enable()
         this.view.formfields.name.refresh()
@@ -187,6 +200,7 @@ export class EmployeesWindow {
         this.view.formfields.birth.refresh()
     }
 
+    // функция приведения окна к виду, запрещающему редактирование
     disableForm() {
         this.view.formfields.name.disable()
         this.view.formfields.name.refresh()
@@ -201,6 +215,7 @@ export class EmployeesWindow {
         this.view.formfields.birth.refresh()
     }
 
+    // функция изменения окна для создания сотрудника
     newEmployee(){
         this.view.windowLabel.define("template", "Новый сотрудник")
         this.view.windowLabel.refresh()
@@ -211,6 +226,7 @@ export class EmployeesWindow {
         this.enableForm()
     }
 
+    // функция изменения окна для редактирования сотрудника
     updateEmployee(){
         this.view.windowLabel.define("template", "Редактирование")
         this.view.windowLabel.refresh()
@@ -221,6 +237,7 @@ export class EmployeesWindow {
         this.enableForm()
     }
 
+     // функция изменения окна для удаления сотрудника
     deleteEmployee(){
         this.view.windowLabel.define("template", "Удаление")
         this.view.windowLabel.refresh()
